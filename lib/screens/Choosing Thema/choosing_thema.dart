@@ -17,7 +17,7 @@ class ButtonPage extends StatelessWidget {
         itemCount: 60,
         itemBuilder: (context, index) {
           int row = index ~/ 4 + 1;
-          int column = index % 4 + 1;
+          int column = (index % 4) + 1;
           return InkWell(
             onTap: () {
               Navigator.push(

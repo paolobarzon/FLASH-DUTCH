@@ -54,31 +54,38 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isThisTheFirstTry = true;
   bool didIgetItWrongFirst = false;
 
-  //int newIndex = await 0;
+  bool isThisTheFirstWordEverOfTheQuizlet = true;
 
   double fontSize2 = 24.0;
 
+  int indexOfTheWordToGuess = 0;
+  int numberOfcircles = 25;
+
   List<Widget> progressDots = List.generate(
-    10,
+    25,
     (index) => Padding(
       padding: EdgeInsets.symmetric(horizontal: 2.0),
       // Adjust the horizontal padding as needed
       child: Icon(
         Icons.circle,
-        size: 30.0, // Set the size as needed
+        size: 10.0, // Set the size as needed
         color: Colors.white,
       ),
     ),
   );
 
-  Future<int> searchInCSV(int thema, int section) async {
+  List<int> searchInCSV(int thema, int section) {
+    int index1 = 0;
+    int index2 = 0;
+    print(thema);
+    print(section);
     // Get the path to the CSV file
     //String csvPath = 'C:\Users\paolo\AndroidStudioProjects\simple_app_simple\assets\wordscopy.csv'; // Update the path as needed
-    final csvPath = await rootBundle.loadString("assets/wordscopy.csv");
+    final csvPath = rootBundle.loadString("assets/wordscopy.csv");
 
     // Read the CSV file
-    final File file = File(csvPath);
-    List<List<dynamic>> csvData = [];
+    //final File file = File(csvPath);
+    // List<List<dynamic>> csvData = [];
 
     // Check if the file exists
     /* if (await file.exists()) {
@@ -92,28 +99,52 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
      */
-
+    //print(_data);
+    //print(_data[2262][1]);
     // Iterate over the CSV data to find the index
-    for (int i = 0; i < csvData.length; i++) {
+    for (int i = 0; i < _data.length; i++) {
       // Check if the current row matches the search criteria
-      if (csvData[i].length >= 3 &&
-          csvData[i][0] == 'A2/B1' &&
-          csvData[i][1] == thema.toString() &&
-          csvData[i][2] == section.toString()) {
+      if ( //_data[i].length >= 4 &&
+          _data[i][0] == 'A2/B1' &&
+              _data[i][1] == thema &&
+              _data[i][2] == section) {
         // Return the index if a match is found
-        return i;
+        print(_data[i]);
+        print("data i above, i below");
+        print(i);
+        index1 = i;
+        //return i;
+      }
+    }
+    for (int i = index1+1; i < _data.length; i++) {
+      if ( //_data[i].length >= 4 &&
+      _data[i][0] == 'A2/B1') {
+        // Return the index if a match is found
+        //print(_data[i]);
+        //print("data i above, i below");
+        //print(i);
+        index2 = i;
+        //return i;
       }
     }
 
     // Return -1 if the value is not found
-    return -1;
+    return [index1, index2];
   }
+
+  bool containsNumber(String input) {
+    // Regular expression to match a number
+    RegExp regex = RegExp(r'\d');
+    // Check if the input string contains a number
+    return regex.hasMatch(input);
+  }
+
 
   void updateProgress(bool isCorrect) {
     int indexToUpdate = displayedCardsCount - 1;
     Icon updatedIcon = isCorrect
-        ? Icon(Icons.check, color: Colors.green, size: 30.0)
-        : Icon(Icons.close, color: Colors.red, size: 30.0);
+        ? Icon(Icons.check, color: Colors.green, size: 10.0)
+        : Icon(Icons.close, color: Colors.red, size: 10.0);
 
     setState(() {
       progressDots[indexToUpdate] = updatedIcon;
@@ -153,6 +184,11 @@ class _MyHomePageState extends State<MyHomePage> {
     //print("index");
     //print(index);
     String mainString = _data[index][column].toString();
+    //print ma
+    if (containsNumber(mainString)){
+      print("ah ha $mainString $index");
+      mainString = _data[index+1][column].toString();
+    }
     //print(mainString);
     //print("contains article?");
     //print(mainString.contains(articleCheck));
@@ -250,7 +286,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return displayedText;
   }
 
-  Future<Widget> buildCard(int thema, int section, int index, bool isCorrect, int column, Function() onTap) async {
+  Widget buildCard(int thema, int section, int index, bool isCorrect,
+      int column, Function() onTap) {
     //print("function buildcard");
     //print("english flag?");
     //print(isEnglishFlagVisible);
@@ -265,9 +302,36 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     }
     String mainString = _data[index][column].toString();
-    int newIndex = await searchInCSV(thema, section);
-    newIndex++;
-    mainString = _data[index][column].toString();
+    //int newIndex = searchInCSV(thema, section) + 1;
+
+    if (isThisTheFirstWordEverOfTheQuizlet) {
+      //newIndex++;
+      List<int> indices = searchInCSV(thema, section);
+
+      // Access the returned indices
+      int index = indices[0] + 1;
+      int indexEnd = indices[1];
+      numberOfcircles = indexEnd - index;
+      print("number of circles is $numberOfcircles");
+      //index, indexEnd = searchInCSV(thema, section) + 1;
+      mainString = _data[index][column].toString();
+      isThisTheFirstWordEverOfTheQuizlet = false;
+      indexOfTheWordToGuess = index;
+    } else {
+      if ((column == 0 && isEnglishFlagVisible) ||
+          (column == 1 && !isEnglishFlagVisible)) {
+        indexOfTheWordToGuess++;
+        print("first word of the quizlet $indexOfTheWordToGuess");
+        mainString = _data[indexOfTheWordToGuess][column].toString();
+      } else {
+        //index++;
+        mainString = _data[index][column].toString();
+      }
+    }
+    print(index);
+
+    print(mainString);
+
 
     //print("index of dutch word:");
     //print(indexOfDutchWord);
@@ -287,7 +351,7 @@ class _MyHomePageState extends State<MyHomePage> {
           isOther = true;
         }
       }
-      //print(mainString);
+      print(mainString);
       //print(isArticle);
       //print(isVerb);
       //print(isOther);
@@ -307,17 +371,18 @@ class _MyHomePageState extends State<MyHomePage> {
           }
         }
       }
-      //print(mainString);
+      print(mainString);
       //print(isArticle);
       //print(isVerb);
       //print(isOther);
     }
-    String displayedText = _data[index][column].toString();
-    if (displayedText.endsWith(" het") || displayedText.endsWith(" de")) {
-      displayedText =
-          "${displayedText.split(' ').last} ${displayedText.split(' ').first}";
+    //String mainString = _data[index][column].toString();
+    if (mainString.endsWith(" het") || mainString.endsWith(" de")) {
+      mainString =
+          "${mainString.split(' ').last} ${mainString.split(' ').first}";
     }
-    displayedText = modifyDisplayedTextForThe(displayedText);
+    mainString = modifyDisplayedTextForThe(mainString);
+    print(mainString);
     /*double fontSize2 = 24.0;
     if ((isEnglishFlagVisible && column==0) ||
         (!isEnglishFlagVisible && column==1)){
@@ -342,7 +407,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Text(
               (column == 0 && isEnglishFlagVisible) |
                       (column == 1 && !isEnglishFlagVisible)
-                  ? displayedText
+                  ? mainString
                   : getCorrectString(index, column, isArticle, isVerb, isOther),
               style: TextStyle(fontSize: fontSize2, color: Colors.black),
               softWrap: true, // Allow text to wrap to a new line
@@ -499,7 +564,10 @@ class _MyHomePageState extends State<MyHomePage> {
     int min = 0;
     int max = 3000;
     int row2 = widget.row;
-    int column2 = widget.row;
+    int column2 = widget.column;
+
+    print(numberOfcircles);
+    print(numberOfcircles);
 
     return Center(
         // Center the content vertically and horizontally
@@ -634,6 +702,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: progressDots,
+                    /*List.generate(
+                      numberOfcircles,
+                          (index) => Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 2.0),
+                        // Adjust the horizontal padding as needed
+                        child: Icon(
+                          Icons.circle,
+                          size: 30.0, // Set the size as needed
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                      */
                   ),
                 ),
                 Expanded(
@@ -692,12 +773,17 @@ class _MyHomePageState extends State<MyHomePage> {
                           generateRandomNumber(min, max);
 
                       int caseNumber = random.nextInt(4) + 1;
+                      //print("row");
+                      //print(row2);
+                      //print("column");
+                      //print(column2);
 
                       switch (caseNumber) {
                         case 1:
                           return Column(
                             children: [
-                              buildCard(row2, column2, randomIndex, !random.nextBool(), 0, () {
+                              buildCard(row2, column2, randomIndex,
+                                  !random.nextBool(), 0, () {
                                 isCorrect = !random.nextBool();
                               }),
                               const SizedBox(height: 40),
@@ -706,13 +792,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Expanded(
                                     child: Column(
                                       children: [
-                                        buildCard(row2, column2, randomIndex, true, 1, () {
+                                        buildCard(
+                                            row2, column2, indexOfTheWordToGuess, true, 1,
+                                            () {
                                           isCorrect = true;
                                           showMessage(isCorrect);
                                         }),
-                                        buildCard(row2, column2,
-                                            randomIndexSecondColumn, false, 1,
-                                            () {
+                                        buildCard(
+                                            row2,
+                                            column2,
+                                            randomIndexSecondColumn,
+                                            false,
+                                            1, () {
                                           isCorrect = false;
                                           showMessage(isCorrect);
                                         }),
@@ -722,15 +813,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Expanded(
                                     child: Column(
                                       children: [
-                                        buildCard(row2, column2,
-                                            randomIndexThirdColumn, false, 1,
-                                            () {
+                                        buildCard(
+                                            row2,
+                                            column2,
+                                            randomIndexThirdColumn,
+                                            false,
+                                            1, () {
                                           isCorrect = false;
                                           showMessage(isCorrect);
                                         }),
-                                        buildCard(row2, column2,
-                                            randomIndexFourthColumn, false, 1,
-                                            () {
+                                        buildCard(
+                                            row2,
+                                            column2,
+                                            randomIndexFourthColumn,
+                                            false,
+                                            1, () {
                                           isCorrect = false;
                                           showMessage(isCorrect);
                                         }),
@@ -745,7 +842,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         case 2:
                           return Column(
                             children: [
-                              buildCard(row2, column2, randomIndex, !random.nextBool(), 0, () {
+                              buildCard(row2, column2, randomIndex,
+                                  !random.nextBool(), 0, () {
                                 isCorrect = !random.nextBool();
                               }),
                               const SizedBox(height: 40),
@@ -754,13 +852,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Expanded(
                                     child: Column(
                                       children: [
-                                        buildCard(row2, column2,
-                                            randomIndexSecondColumn, false, 1,
-                                            () {
+                                        buildCard(
+                                            row2,
+                                            column2,
+                                            randomIndexSecondColumn,
+                                            false,
+                                            1, () {
                                           isCorrect = false;
                                           showMessage(isCorrect);
                                         }),
-                                        buildCard(row2, column2, randomIndex, true, 1, () {
+                                        buildCard(
+                                            row2, column2, indexOfTheWordToGuess, true, 1,
+                                            () {
                                           isCorrect = true;
                                           showMessage(isCorrect);
                                         }),
@@ -770,15 +873,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Expanded(
                                     child: Column(
                                       children: [
-                                        buildCard(row2, column2,
-                                            randomIndexThirdColumn, false, 1,
-                                            () {
+                                        buildCard(
+                                            row2,
+                                            column2,
+                                            randomIndexThirdColumn,
+                                            false,
+                                            1, () {
                                           isCorrect = false;
                                           showMessage(isCorrect);
                                         }),
-                                        buildCard(row2, column2,
-                                            randomIndexFourthColumn, false, 1,
-                                            () {
+                                        buildCard(
+                                            row2,
+                                            column2,
+                                            randomIndexFourthColumn,
+                                            false,
+                                            1, () {
                                           isCorrect = false;
                                           showMessage(isCorrect);
                                         }),
@@ -793,7 +902,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         case 3:
                           return Column(
                             children: [
-                              buildCard(row2, column2, randomIndex, !random.nextBool(), 0, () {
+                              buildCard(row2, column2, randomIndex,
+                                  !random.nextBool(), 0, () {
                                 isCorrect = !random.nextBool();
                               }),
                               const SizedBox(height: 40),
@@ -802,15 +912,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Expanded(
                                     child: Column(
                                       children: [
-                                        buildCard(row2, column2,
-                                            randomIndexSecondColumn, false, 1,
-                                            () {
+                                        buildCard(
+                                            row2,
+                                            column2,
+                                            randomIndexSecondColumn,
+                                            false,
+                                            1, () {
                                           isCorrect = false;
                                           showMessage(isCorrect);
                                         }),
-                                        buildCard(row2, column2,
-                                            randomIndexThirdColumn, false, 1,
-                                            () {
+                                        buildCard(
+                                            row2,
+                                            column2,
+                                            randomIndexThirdColumn,
+                                            false,
+                                            1, () {
                                           isCorrect = false;
                                           showMessage(isCorrect);
                                         }),
@@ -820,13 +936,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Expanded(
                                     child: Column(
                                       children: [
-                                        buildCard(row2, column2, randomIndex, true, 1, () {
+                                        buildCard(
+                                            row2, column2, indexOfTheWordToGuess, true, 1,
+                                            () {
                                           isCorrect = true;
                                           showMessage(isCorrect);
                                         }),
-                                        buildCard(row2, column2,
-                                            randomIndexFourthColumn, false, 1,
-                                            () {
+                                        buildCard(
+                                            row2,
+                                            column2,
+                                            randomIndexFourthColumn,
+                                            false,
+                                            1, () {
                                           isCorrect = false;
                                           showMessage(isCorrect);
                                         }),
@@ -841,7 +962,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         case 4:
                           return Column(
                             children: [
-                              buildCard(row2, column2, randomIndex, !random.nextBool(), 0, () {
+                              buildCard(row2, column2, randomIndex,
+                                  !random.nextBool(), 0, () {
                                 isCorrect = !random.nextBool();
                               }),
                               const SizedBox(height: 40),
@@ -850,15 +972,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Expanded(
                                     child: Column(
                                       children: [
-                                        buildCard(row2, column2,
-                                            randomIndexSecondColumn, false, 1,
-                                            () {
+                                        buildCard(
+                                            row2,
+                                            column2,
+                                            randomIndexSecondColumn,
+                                            false,
+                                            1, () {
                                           isCorrect = false;
                                           showMessage(isCorrect);
                                         }),
-                                        buildCard(row2, column2,
-                                            randomIndexThirdColumn, false, 1,
-                                            () {
+                                        buildCard(
+                                            row2,
+                                            column2,
+                                            randomIndexThirdColumn,
+                                            false,
+                                            1, () {
                                           isCorrect = false;
                                           showMessage(isCorrect);
                                         }),
@@ -868,13 +996,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Expanded(
                                     child: Column(
                                       children: [
-                                        buildCard(row2, column2,
-                                            randomIndexFourthColumn, false, 1,
-                                            () {
+                                        buildCard(
+                                            row2,
+                                            column2,
+                                            randomIndexFourthColumn,
+                                            false,
+                                            1, () {
                                           isCorrect = false;
                                           showMessage(isCorrect);
                                         }),
-                                        buildCard(row2, column2, randomIndex, true, 1, () {
+                                        buildCard(
+                                            row2, column2, indexOfTheWordToGuess, true, 1,
+                                            () {
                                           isCorrect = true;
                                           showMessage(isCorrect);
                                         }),
