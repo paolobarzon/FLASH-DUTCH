@@ -95,6 +95,8 @@ class _MyVerbsState extends State<MyVerbs> {
             rightAnswers: correctCounter,
             wrongAnswers: wrongCounter,
             whatWasIdoing : "verbs",
+            row: 999,
+            column: 999,
           ),
         ),
       );

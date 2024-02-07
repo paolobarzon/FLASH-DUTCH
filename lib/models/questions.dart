@@ -9,10 +9,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:shared_preferences/shared_preferences.dart';
+import '../screens/Choosing Thema/choosing_thema.dart';
+
+
 
 class MyHomePage extends StatefulWidget {
   final int row;
   final int column;
+
 
   const MyHomePage({
     Key? key,
@@ -25,6 +30,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  // Retrieve selected quizlet
+  String quizlet = selectedQuizlet;
   List<List<dynamic>> _data = [];
   Color myCardColor = Colors.white;
 
@@ -77,8 +85,8 @@ class _MyHomePageState extends State<MyHomePage> {
   List<int> searchInCSV(int thema, int section) {
     int index1 = 0;
     int index2 = 0;
-    print(thema);
-    print(section);
+    //thema);
+    //print(section);
     // Get the path to the CSV file
     //String csvPath = 'C:\Users\paolo\AndroidStudioProjects\simple_app_simple\assets\wordscopy.csv'; // Update the path as needed
     final csvPath = rootBundle.loadString("assets/wordscopy.csv");
@@ -109,9 +117,9 @@ class _MyHomePageState extends State<MyHomePage> {
               _data[i][1] == thema &&
               _data[i][2] == section) {
         // Return the index if a match is found
-        print(_data[i]);
-        print("data i above, i below");
-        print(i);
+        //print(_data[i]);
+        //print("data i above, i below");
+        //print(i);
         index1 = i;
         //return i;
       }
@@ -130,6 +138,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // Return -1 if the value is not found
     return [index1, index2];
+  }
+
+  // Function to handle quizlet completion
+  void onQuizletCompleted(String quizletId, int row, int column) {
+    // Store information about completed quizlet (e.g., in shared preferences)
+    // Example using shared_preferences:
+    SharedPreferences.getInstance().then((prefs) {
+      // Set a flag indicating the completion status of the quizlet
+      prefs.setBool('A2/B1 - $row - $column', true);
+    });
   }
 
   bool containsNumber(String input) {
@@ -173,22 +191,26 @@ class _MyHomePageState extends State<MyHomePage> {
     return text;
   }
 
+  bool containsANumber(String str) {
+    RegExp numberRegex = RegExp(r'\d+');
+    return numberRegex.hasMatch(str);
+  }
+
   String getCorrectString(
       int index, int column, bool isArticle, bool isVerb, bool isOther) {
     //print( "in function correct string");
-    //print(isArticle);
-    //print(isVerb);
-    //print(isOther);
-    //print("index of dutch word:");
-    //print(indexOfDutchWord);
-    //print("index");
-    //print(index);
+    print(isArticle);
+    print(isVerb);
+    print(isOther);
+    print("index of dutch word:");
+    print(indexOfDutchWord);
+    print("index");
+    print(index);
     String mainString = _data[index][column].toString();
+    print("ehre should be the same as above: $mainString");
+
     //print ma
-    if (containsNumber(mainString)){
-      print("ah ha $mainString $index");
-      mainString = _data[index+1][column].toString();
-    }
+
     //print(mainString);
     //print("contains article?");
     //print(mainString.contains(articleCheck));
@@ -217,7 +239,8 @@ class _MyHomePageState extends State<MyHomePage> {
         } else {
           if (!(indexOfDutchWord == index))
             while (mainString.startsWith(verbCheckEN) |
-                mainString.endsWith(articleCheckEN)) {
+                mainString.endsWith(articleCheckEN) |
+            containsANumber(mainString)) {
               //print("check other");
               //print(mainString);
               index++;
@@ -249,7 +272,8 @@ class _MyHomePageState extends State<MyHomePage> {
           if (!(indexOfDutchWord == index))
             while (mainString.endsWith(verbCheck) |
                 mainString.endsWith(articleCheck) |
-                mainString.endsWith(articleCheck2)) {
+                mainString.endsWith(articleCheck2) |
+            containsANumber(mainString)) {
               //print("check other");
               //print(mainString);
               index++;
@@ -260,7 +284,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     }
     //print("I selected");
-    //print(mainString);
+    print("it changed to $mainString");
     // Additional logic for isVerb, isOther, etc.
     /*String displayedText = _data[index][column].toString();
     if (displayedText.endsWith(" het") || displayedText.endsWith(" de")) {
@@ -271,6 +295,30 @@ class _MyHomePageState extends State<MyHomePage> {
           .first}";
 
      */
+    if (containsNumber(mainString)){
+      print("ah ha $mainString $index");
+      mainString = _data[index+1][column].toString();
+    }
+    RegExp numberRegex = RegExp(r'\d+');
+    bool doesItcontainsNumber = numberRegex.hasMatch(mainString);
+    if (doesItcontainsNumber) {
+      // If the string contains a number, replace it with a new string
+      mainString = _data[index+1][column].toString(); // Replace "New String" with your desired replacement
+    }
+    if(mainString.endsWith(" het")){
+      var middleString = mainString.replaceAll(articleCheck2, '').trim();
+      //var newString = mainString.substring(mainString.length - 4);
+      mainString = 'Het' + ' ' + middleString;
+    }
+    if(mainString.endsWith(" de")){
+      var middleString = mainString.replaceAll(articleCheck, '').trim();
+      //var newString = mainString.substring(mainString.length - 3);
+      mainString = 'De' + ' ' + middleString;
+    }
+    if(mainString.endsWith(" the")){
+      var middleString = mainString.replaceAll(articleCheckEN, '').trim();
+      mainString = 'The' + ' ' + middleString;
+    }
     String displayedText = mainString;
     displayedText = modifyDisplayedText(displayedText);
 
@@ -280,9 +328,20 @@ class _MyHomePageState extends State<MyHomePage> {
     if ((isEnglishFlagVisible && column == 0) ||
         (!isEnglishFlagVisible && column == 1)) {
     } else {
-      fontSize2 = (displayedText.length > 15) ? 18.0 : 24.0;
-    }
+      // Split the displayedText into words
+      List<String> words = displayedText.split(' ');
 
+      // Check if any word in the list has a length greater than 13
+      bool isWordLong = words.any((word) => word.length > 13);
+
+      // Adjust the font size based on the result
+      fontSize2 = isWordLong ? 18.0 : 24.0;
+
+      if (displayedText.length > 19){
+        fontSize2 = 14.0;
+      }
+    }
+    print("it changed to $displayedText");
     return displayedText;
   }
 
@@ -302,6 +361,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     }
     String mainString = _data[index][column].toString();
+    //print("first try at getting the word: $mainString");
     //int newIndex = searchInCSV(thema, section) + 1;
 
     if (isThisTheFirstWordEverOfTheQuizlet) {
@@ -309,10 +369,10 @@ class _MyHomePageState extends State<MyHomePage> {
       List<int> indices = searchInCSV(thema, section);
 
       // Access the returned indices
-      int index = indices[0] + 1;
+      index = indices[0] + 1;
       int indexEnd = indices[1];
       numberOfcircles = indexEnd - index;
-      print("number of circles is $numberOfcircles");
+      //print("number of circles is $numberOfcircles");
       //index, indexEnd = searchInCSV(thema, section) + 1;
       mainString = _data[index][column].toString();
       isThisTheFirstWordEverOfTheQuizlet = false;
@@ -320,19 +380,20 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       if ((column == 0 && isEnglishFlagVisible) ||
           (column == 1 && !isEnglishFlagVisible)) {
-        indexOfTheWordToGuess++;
-        print("first word of the quizlet $indexOfTheWordToGuess");
+        indexOfTheWordToGuess++; //sequentially show the words from the thema/section
+        //print("first word of the quizlet $indexOfTheWordToGuess");
         mainString = _data[indexOfTheWordToGuess][column].toString();
       } else {
         //index++;
-        mainString = _data[index][column].toString();
+        mainString = _data[indexOfTheWordToGuess][column].toString();
       }
     }
-    print(index);
+    //print(index);
 
-    print(mainString);
-
-
+    //print(mainString);
+    mainString = _data[index][column].toString();
+    print("first try at getting the word: $mainString");
+    print("we are identifying the type... $index and $indexOfDutchWord should be the same");
     //print("index of dutch word:");
     //print(indexOfDutchWord);
     //print("index");
@@ -345,13 +406,14 @@ class _MyHomePageState extends State<MyHomePage> {
           mainString.endsWith(articleCheck2)) {
         isArticle = true;
       } else {
-        if (mainString.endsWith(verbCheck)) {
+        if (mainString.endsWith(verbCheck) &&
+            _data[index][1].toString().startsWith(verbCheckEN)) {
           isVerb = true;
         } else {
           isOther = true;
         }
       }
-      print(mainString);
+      //print(mainString);
       //print(isArticle);
       //print(isVerb);
       //print(isOther);
@@ -362,7 +424,8 @@ class _MyHomePageState extends State<MyHomePage> {
           isArticle = true;
           //print("art");
         } else {
-          if (mainString.startsWith(verbCheckEN)) {
+          if (mainString.startsWith(verbCheckEN) &&
+              _data[index][0].toString().endsWith(verbCheck)) {
             isVerb = true;
             //print("verb");
           } else {
@@ -371,18 +434,37 @@ class _MyHomePageState extends State<MyHomePage> {
           }
         }
       }
-      print(mainString);
+      //print(mainString);
       //print(isArticle);
       //print(isVerb);
       //print(isOther);
     }
     //String mainString = _data[index][column].toString();
-    if (mainString.endsWith(" het") || mainString.endsWith(" de")) {
-      mainString =
-          "${mainString.split(' ').last} ${mainString.split(' ').first}";
+    /*if (mainString.endsWith(" het") || mainString.endsWith(" de")) {
+      List<String> words = mainString.split(' ');
+      String article = words.removeLast(); // Remove the article from the end
+      mainString = '$article ${words.join(' ')}'; // Concatenate the remaining words
+    }*/
+    while(containsANumber(mainString)){
+      mainString = _data[index++][column].toString();
     }
+    if(mainString.endsWith(" het")){
+      var middleString = mainString.replaceAll(articleCheck2, '').trim();
+      //var newString = mainString.substring(mainString.length - 4);
+      mainString = 'Het' + ' ' + middleString;
+    }
+    if(mainString.endsWith(" de")){
+      var middleString = mainString.replaceAll(articleCheck, '').trim();
+      //var newString = mainString.substring(mainString.length - 3);
+      mainString = 'De' + ' ' + middleString;
+    }
+    if(mainString.endsWith(" the")){
+      var middleString = mainString.replaceAll(articleCheckEN, '').trim();
+      mainString = 'The' + ' ' + middleString;
+    }
+
     mainString = modifyDisplayedTextForThe(mainString);
-    print(mainString);
+    //print(mainString);
     /*double fontSize2 = 24.0;
     if ((isEnglishFlagVisible && column==0) ||
         (!isEnglishFlagVisible && column==1)){
@@ -508,7 +590,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     isArticle = false;
                     isVerb = false;
                     isOther = false;
-                    if (displayedCardsCount == 10) {
+                    if (displayedCardsCount == 3) {
+                      print(widget.row);
+                      print(widget.column);
+                      // Call onQuizletCompleted() when quizlet is completed
+                      onQuizletCompleted(selectedQuizlet, widget.row, widget.column);
                       // Navigate to the new page with the "sucker" message
                       Navigator.pushReplacement(
                         context,
@@ -517,6 +603,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             rightAnswers: rightAnswers,
                             wrongAnswers: wrongAnswers,
                             whatWasIdoing: "questions",
+                            row: widget.row,
+                            column: widget.column,
                           ),
                         ),
                       );
@@ -556,6 +644,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _loadCSV();
+
+    print("im here once");
   }
 
   @override
@@ -566,8 +656,8 @@ class _MyHomePageState extends State<MyHomePage> {
     int row2 = widget.row;
     int column2 = widget.column;
 
-    print(numberOfcircles);
-    print(numberOfcircles);
+    //print(numberOfcircles);
+    //print(numberOfcircles);
 
     return Center(
         // Center the content vertically and horizontally
@@ -583,10 +673,9 @@ class _MyHomePageState extends State<MyHomePage> {
             // Add an AppBar with a leading icon button
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
-              // You can use Icons.home for a home icon
               onPressed: () {
                 // Handle the navigation accordingly, for example, pop the current screen
-                Navigator.of(context).pop();
+                Navigator.maybePop(context); // Use maybePop to handle back navigation
               },
             ),
             title: Align(
@@ -780,6 +869,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                       switch (caseNumber) {
                         case 1:
+                          print("case 1");
                           return Column(
                             children: [
                               buildCard(row2, column2, randomIndex,
@@ -793,7 +883,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            row2, column2, indexOfTheWordToGuess, true, 1,
+                                            row2, column2, indexOfDutchWord, true, 1,
                                             () {
                                           isCorrect = true;
                                           showMessage(isCorrect);
@@ -840,6 +930,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           );
 
                         case 2:
+                          print("case 2");
                           return Column(
                             children: [
                               buildCard(row2, column2, randomIndex,
@@ -862,7 +953,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            row2, column2, indexOfTheWordToGuess, true, 1,
+                                            row2, column2, indexOfDutchWord, true, 1,
                                             () {
                                           isCorrect = true;
                                           showMessage(isCorrect);
@@ -900,6 +991,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           );
 
                         case 3:
+                          print("case 3");
                           return Column(
                             children: [
                               buildCard(row2, column2, randomIndex,
@@ -937,7 +1029,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            row2, column2, indexOfTheWordToGuess, true, 1,
+                                            row2, column2, indexOfDutchWord, true, 1,
                                             () {
                                           isCorrect = true;
                                           showMessage(isCorrect);
@@ -960,6 +1052,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           );
 
                         case 4:
+                          print("case 4");
                           return Column(
                             children: [
                               buildCard(row2, column2, randomIndex,
@@ -1006,7 +1099,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            row2, column2, indexOfTheWordToGuess, true, 1,
+                                            row2, column2, indexOfDutchWord, true, 1,
                                             () {
                                           isCorrect = true;
                                           showMessage(isCorrect);
