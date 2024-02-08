@@ -606,7 +606,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     isArticle = false;
                     isVerb = false;
                     isOther = false;
-                    if (displayedCardsCount == 3) {
+                    if (displayedCardsCount == 25) {
                       //print(widget.row);
                       //print(widget.column);
                       // Call onQuizletCompleted() when quizlet is completed
