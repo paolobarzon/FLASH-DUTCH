@@ -26,7 +26,8 @@ class MyApp extends StatelessWidget {
           int row = 1; // Example row
           int column = 1; // Example column
           String level = "A0";
-          return MyHomePage(level: level, row: row, column: column);
+          bool IsEnglishFlagVisible = true;
+          return MyHomePage(IsEnglishFlagVisible: IsEnglishFlagVisible, level: level, row: row, column: column);
         },
         // Add other routes as needed
       },

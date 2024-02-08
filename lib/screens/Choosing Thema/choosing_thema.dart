@@ -13,6 +13,7 @@ class ButtonPage extends StatefulWidget {
 
 class _ButtonPageState extends State<ButtonPage> {
   int globalRowCounter = 1;
+  bool isFlagSwapped = true;
   List<bool> levelVisibility = [false, false, false, false, false];
   Map<String, Color> quizletCompletionStatus =
       {}; // Map to store completion status
@@ -70,6 +71,12 @@ class _ButtonPageState extends State<ButtonPage> {
     Navigator.pushNamed(context, '/questions');
   }
 
+  void toggleFlagPosition() {
+    setState(() {
+      isFlagSwapped = !isFlagSwapped;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,6 +92,38 @@ class _ButtonPageState extends State<ButtonPage> {
                     "FLASH DUTCH",
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                   ),
+                ),
+              ),
+              GestureDetector(
+                onTap: toggleFlagPosition,
+                child: Column(
+                  children: [
+                    if (isFlagSwapped)
+                      Image.asset(
+                        'assets/dutch.png.png',
+                        height: 20,
+                        width: 30,
+                      )
+                    else
+                      Image.asset(
+                        'assets/english_flag.png',
+                        height: 20,
+                        width: 30,
+                      ),
+                    Icon(Icons.arrow_downward),
+                    if (isFlagSwapped)
+                      Image.asset(
+                        'assets/english_flag.png',
+                        height: 20,
+                        width: 30,
+                      )
+                    else
+                      Image.asset(
+                        'assets/dutch.png.png',
+                        height: 20,
+                        width: 30,
+                      ),
+                  ],
                 ),
               ),
             ],
@@ -210,12 +249,14 @@ class _ButtonPageState extends State<ButtonPage> {
                               loadQuizletCompletionStatus;
                               return InkWell(
                                 onTap: () {
+                                  print(isFlagSwapped);
                                   //print("$row $column");
                                   onSelectQuizlet(quizletId);
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => MyHomePage(
+                                        IsEnglishFlagVisible: isFlagSwapped,
                                         level: level,
                                         row: row,
                                         column: column,

@@ -14,6 +14,7 @@ class SuckerPage extends StatelessWidget {
   final int row;
   final int column;
   final String level;
+  final bool IsEnglishFlagVisible;
 
   SuckerPage(
       {required this.rightAnswers,
@@ -21,7 +22,8 @@ class SuckerPage extends StatelessWidget {
       required this.whatWasIdoing,
       required this.row,
       required this.column,
-      required this.level});
+      required this.level,
+      required this.IsEnglishFlagVisible});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +56,7 @@ class SuckerPage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                MyHomePage(level: level, row: row, column: column)),
+                                MyHomePage(IsEnglishFlagVisible:IsEnglishFlagVisible, level: level, row: row, column: column)),
                       );
 
                       //Navigator.pop(context);
