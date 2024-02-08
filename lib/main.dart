@@ -25,7 +25,8 @@ class MyApp extends StatelessWidget {
           // Define the row and column variables here
           int row = 1; // Example row
           int column = 1; // Example column
-          return MyHomePage(row: row, column: column);
+          String level = "A0";
+          return MyHomePage(level: level, row: row, column: column);
         },
         // Add other routes as needed
       },

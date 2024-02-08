@@ -1,4 +1,4 @@
-﻿Dutch,English,Level
+﻿A0,1,1
 benzine de,gasoline the,A1
 duren,to last,A1
 erg,very,A1
@@ -24,6 +24,7 @@ verhaal het,story the,A1
 want,because,A1
 winter de,winter the,A1
 zelfs,even,A1
+A0,1,2
 auto de,car the,A1
 bus de,bus the,A1
 collega de,colleague the,A1
@@ -48,6 +49,7 @@ vergadering de,meeting the,A1
 verhuizing de,move the,A1
 vriendelijk,kind,A1
 werk het,work the,A1
+A0,1,3
 dochter de,daughter the,A1
 duidelijk,clear,A1
 eerst,first,A1
@@ -75,6 +77,7 @@ terug,back,A1
 tijdje het,while the,A1
 uitleggen,to explain,A1
 winkelen,to shop,A1
+A0,1,4
 aankomen,to arrive,A1
 aankomst de,arrival the,A1
 bedankt,thanks,A1
@@ -99,6 +102,7 @@ vertraging de,delay the,A1
 vertrek het,departure the,A1
 vertrekken,to leave,A1
 volgende,next one,A1
+A0,2,1
 assistente de,assistant the,A1
 behandelen,to treat,A1
 dokter de,doctor the,A1
@@ -123,6 +127,7 @@ toetsen,to enter,A1
 verwijzing de,referral the,A1
 via,through,A1
 ziekenhuis het,hospital the,A1
+A0,2,2
 brengen,to bring,A1
 dag de,day the,A1
 eigenlijk,actually,A1
@@ -146,6 +151,7 @@ vanzelf,on its own,A1
 verkouden,(to have a) cold,A1
 verzetten,to reschedule,A1
 vrij,free,A1
+A0,2,3
 apotheek de,pharmacy the,A1
 bijsluiter de,leaflet the,A1
 doos de (het doosje),box the,A1
@@ -175,6 +181,7 @@ wakker,awake,A1
 wc-papier het,toilet paper the,A1
 zoon de (het zoontje),son the,A1
 zwaar,heavy,A1
+A0,2,4
 alcohol de,alcohol the,A1
 bewaren,to save,A1
 bijwerking de,side effect the,A1
@@ -199,6 +206,7 @@ tegelijk,at the same time,A1
 tijdens,during,A1
 verpakking de,packaging the,A1
 zwangerschap de,pregnancy the,A1
+A0,3,1
 afwas de,dishes the,A1
 bewoner de,resident the,A1
 boos,angry,A1
@@ -224,6 +232,7 @@ uitgaan,to go out,A1
 verdelen,to divide,A1
 vies,dirty,A1
 weleens,sometimes,A1
+A0,3,2
 activiteit de,activity the,A1
 begane grond de,ground floor the,A1
 bibliotheek de,library the,A1
@@ -249,6 +258,7 @@ verschillen,to differ,A1
 voorbereiden,to prepare,A1
 vrijwilliger de,volunteer the,A1
 zich aanmelden,to sign up,A1
+A0,3,3
 bioscoop de,cinema the,A1
 boom de,tree the,A1
 buitenland het,foreign country the,A1
@@ -274,6 +284,7 @@ tevreden,content,A1
 verkeer het,traffic the,A1
 voetballen,to play football,A1
 zoveel,that many,A1
+A0,3,4
 bang,scared,A1
 blaffen,to bark,A1
 buurman de,male neighbour the,A1
@@ -298,6 +309,7 @@ waarschijnlijk,probably,A1
 wennen,to get used to,A1
 woningbouwvereniging de,housing association the,A1
 zielig,sad,A1
+A1,4,1
 zomaar,just like that,A1
 appartement het,apartment the,A1
 badkamer de,bathroom the,A1
@@ -324,6 +336,7 @@ vierkante meter de,square metre the,A1
 vlakbij,nearby,A1
 vrijstaand,detached,A1
 wc de,toilet the,A1
+A1,4,2
 bed het,bed the,A1
 ervaring de,experience the,A1
 flat de,block of flats the,A1
@@ -347,6 +360,7 @@ tweedehands,second-hand,A1
 verhuizen,to move,A1
 verkopen,to sell,A1
 zoeken,to search,A1
+A1,4,3
 belangrijk,important,A1
 blauw,blue,A1
 donker,dark,A1
@@ -374,6 +388,7 @@ woning de,home the,A1
 woonkamer de,living room the,A1
 zetten,to put,A1
 zorgen voor,to create,A1
+A1,4,4
 allebei,both,A1
 allemaal,all,A1
 elkaar,each other,A1
@@ -398,6 +413,7 @@ was de,laundry the,A1
 wasmachine de,washing machine the,A1
 zelfstandig,independent,A1
 zomer de,summer the,A1
+A1,5,1
 allerlei,all kinds of,A1
 boter de,butter the,A1
 fles de,bottle the,A1
@@ -422,6 +438,7 @@ water het,water the,A1
 wijn de,wine the,A1
 yoghurt de,yogurt the,A1
 zout het,salt the,A1
+A1,5,2
 avondeten het,dinner the,A1
 boterham de (boterhammen),sandwich the,A1
 broodje het,sandwich the,A1
@@ -447,6 +464,7 @@ vanmiddag,this afternoon,A1
 vegetariër de,vegetarian the,A1
 zoet,sweet,A1
 zout,salty,A1
+A1,5,3
 advies het,advice the,A1
 afvallen,to lose weight,A1
 bank de,bank the,A1
@@ -472,6 +490,7 @@ tussendoor,in between,A1
 vet,fat,A1
 wegen,to weigh,A1
 weinig,little,A1
+A1,5,4
 afhalen,to take away,A1
 alle,all,A1
 bestellen,to order,A1
@@ -498,6 +517,7 @@ typisch,typical,A1
 verschillend,different,A1
 vroeg,early,A1
 zoals,such as,A1
+A1,6,1
 alles,everything,A1
 beterschap,get well soon,A1
 bezig,doing (well),A1
@@ -525,6 +545,7 @@ ziek,ill,A1
 zo,so,A1
 zon de,sun the,A1
 zus de,sister the,A1
+A1,6,2
 bezoek het,visit the,A1
 binnenkomen,to come in,A1
 drinken,to drink,A1
@@ -548,6 +569,7 @@ zelf,self,A1
 zitten,to sit,A1
 zonder,without,A1
 zwart,black,A1
+A1,6,3
 avond de,evening the,A1
 beginnen,to start,A1
 begrijpen,to understand,A1
@@ -572,6 +594,7 @@ voetbal het,football the,A1
 vrijdag,Friday,A1
 weer,again,A1
 weg,away,A1
+A1,6,4
 afgesproken,it's a deal,A1
 afspraak de,appointment the,A1
 baan de,job the,A1
@@ -597,6 +620,7 @@ vandaag,today,A1
 verjaardag de,birthday the,A1
 volgend,next,A1
 zeker,definitely,A1
+A1,7,1
 ander,other,A1
 appel de (appels),apple the,A1
 banaan de (bananen),banana the,A1
@@ -623,6 +647,7 @@ vis de,fish the,A1
 vlees het,meat the,A1
 we,we,A1
 wortel de (wortels),carrot the,A1
+A1,7,2
 aardappel de (aardappels),potato the,A1
 alsjeblieft,please / here you go,A1
 alstublieft,please / here you go,A1
@@ -647,6 +672,7 @@ pinnen,to pay by debit card,A1
 verkoper de,seller the,A1
 voor,for,A1
 zeggen,to say,A1
+A1,7,3
 altijd,always,A1
 bakker de,baker the,A1
 brood het,bread the,A1
@@ -673,6 +699,7 @@ wel,on the other hand,A1
 welk,which,A1
 zaterdag,Saturday,A1
 zien,to see,A1
+A1,7,4
 chips de,potato chips the,A1
 denken,to think,A1
 dicht,closed,A1
@@ -696,6 +723,7 @@ tot,until,A1
 uur,o'clock,A1
 weten,to know,A1
 zak de,bag the,A1
+A1,8,1
 dat,that,A1
 dit,this,A1
 dorp het,village the,A1
@@ -721,6 +749,7 @@ winkel de,store the,A1
 wonen,to live,A1
 ze,she,A1
 zijn,to be,A1
+A1,8,2
 één,one,A1
 achternaam de,last name the,A1
 al,already,A1
@@ -744,6 +773,7 @@ telefoonnummer het,telephone number the,A1
 vandaan,from,A1
 voornaam de,first name the,A1
 wat,what,A1
+A1,8,3
 adres het,address the,A1
 april,April,A1
 e-mailadres het,email address the,A1
@@ -768,6 +798,7 @@ uw,your [formal],A1
 vrouw de,woman the,A1
 woonplaats de,place of residence the,A1
 zullen,will,A1
+A1,8,4
 alleen,on my own,A1
 appen,to app,A1
 buren de,neighbours the,A1
@@ -792,6 +823,7 @@ week de (weken),week the,A1
 weekend het,weekend the,A1
 welkom,welcome,A1
 wie,who,A1
+A1,9,1
 willen,to want,A1
 aandoen,to put on,A1
 aantrekken,to put on,A1
@@ -819,6 +851,7 @@ spijkerbroek de,jeans the,A1
 trouwen,to marry,A1
 trui de,sweater the,A1
 uitgeven,to spend,A1
+A1,9,2
 aanbieding de,special offer the,A1
 aankoop de,purchase the,A1
 algemeen,general,A1
@@ -845,6 +878,7 @@ terugstorten,to refund,A1
 terugsturen,to send back,A1
 tijd de,time the,A1
 voorwaarde de,condition the,A1
+A1,9,3
 aantal het,number the,A1
 argument het,argument the,A1
 bekijken,to look at,A1
@@ -866,6 +900,7 @@ twijfelen,to doubt,A1
 verdienen,to earn,A1
 vinger de,finger the,A1
 waar,true,A1
+A1,9,4
 afgeven,to hand off,A1
 artikel het,article the,A1
 dichtmaken,to close,A1
@@ -892,6 +927,7 @@ verzenden,to send,A1
 wachtwoord het,password the,A1
 webwinkel de,webshop the,A1
 totaal het,total the,A1
+A1,10,1
 absoluut,absolutely,A1
 aflevering de,episode the,A1
 dood,dead,A1
@@ -917,6 +953,7 @@ verslavend,addictive,A1
 waarover,about what,A1
 waarvan,of what,A1
 zender de,(TV) station the,A1
+A1,10,2
 absoluut,absolutely,A1
 aflevering de,episode the,A1
 dood,dead,A1
@@ -942,6 +979,7 @@ verslavend,addictive,A2
 waarover,about what,A2
 waarvan,of what,A2
 zender de,(TV) station the,A2
+A1,10,3
 afstand de,distance the,A2
 arbeidsmarkt de,labour market the,A2
 Aziatisch,Asian,A2
@@ -968,6 +1006,7 @@ verhogen,to increase,A2
 voortaan,from now on,A2
 vrezen,to fear,A2
 werkloosheid de,unemployment the,A2
+A1,10,4
 aankomen,to arrive,A2
 aanraden,to recommend,A2
 beeld het,image the,A2
@@ -993,6 +1032,7 @@ terwijl,while,A2
 vluchteling de,refugee the,A2
 ziekte de,illness the / disease the,A2
 zoiets,something like that,A2
+A2,11,1
 aankomen,to arrive,A2
 aanraden,to recommend,A2
 beeld het,image the,A2
@@ -1018,6 +1058,7 @@ terwijl,while,A2
 vluchteling de,refugee the,A2
 ziekte de,illness the / disease the,A2
 zoiets,something like that,A2
+A2,11,2
 aantrekkelijk,attractive,A2
 belofte de,promise the,A2
 bewust,consciously,A2
@@ -1044,6 +1085,7 @@ verleiding de,temptation the,A2
 verschrikkelijk,terribly,A2
 werkelijk,really,A2
 zichtbaar,visible,A2
+A2,11,3
 accijns de,excise duty the,A2
 afvoeren,to dispose of,A2
 belasting de,tax the,A2
@@ -1069,6 +1111,7 @@ uitstel het,delay the,A2
 vergissing de,mistake the,A2
 vorm de,form the,A2
 vraag de,question the,A2
+A2,11,4
 afnemen,to decrease,A2
 Amerikaans,American,A2
 angst de,fear the,A2
@@ -1094,6 +1137,7 @@ winnen,to win,A2
 zich voorstellen,to imagine,A2
 zorgen de,worries the,A2
 Zweeds,Swedish,A2
+A2,12,1
 bewolkt,cloudy,A2
 binnenblijven,to stay inside,A2
 bui de,rain shower the,A2
@@ -1118,30 +1162,7 @@ voorspellen,to predict,A2
 waaien,to blow,A2
 wolk de,cloud the,A2
 zeuren,to whine,A2
-bewolkt,cloudy,A2
-binnenblijven,to stay inside,A2
-bui de,rain shower the,A2
-doodgaan,to die,A2
-doorgaan,to go through,A2
-eng,scary,A2
-hagel de,hail the,A2
-handschoen de,glove the,A2
-hitte de,heat the,A2
-hoofd het,head the,A2
-ijs het,ice the,A2
-ijskoud,ice cold,A2
-muts de,hat the,A2
-onweren,to thunder,A2
-opschieten,to hurry up,A2
-paraplu de,umbrella the,A2
-regenjas de,raincoat the,A2
-sneeuwen,to snow,A2
-storm de,storm the,A2
-vannacht,tonight,A2
-voorspellen,to predict,A2
-waaien,to blow,A2
-wolk de,cloud the,A2
-zeuren,to whine,A2
+A2,12,2
 aaien,to pet,A2
 allergisch,allergic,A2
 beest het,animal the,A2
@@ -1165,6 +1186,7 @@ verbieden,to prohibit,A2
 verzorgen,to care for,A2
 vogel de,bird the,A2
 wild,wild,A2
+A2,12,3
 berg de,mountain the,A2
 boerderij de,farm the,A2
 duin de,dune the,A2
@@ -1190,6 +1212,7 @@ verdwijnen,to disappear,A2
 vuur het,fire the,A2
 weiland het,meadow the,A2
 zand het,sand the,A2
+A2,12,4
 behulpzaam,helpful,A2
 beschrijven,to describe,A2
 bezorger de,deliveryman the,A2
@@ -1213,6 +1236,7 @@ sociaal,social,A2
 stage de,internship the,A2
 therapie de,therapy the,A2
 wiskunde de,math the,A2
+A2,13,1
 behulpzaam,helpful,A2
 beschrijven,to describe,A2
 bezorger de,deliveryman the,A2
@@ -1236,6 +1260,7 @@ sociaal,social,A2
 stage de,internship the,A2
 therapie de,therapy the,A2
 wiskunde de,math the,A2
+A2,13,2
 afdeling de,department the,A2
 beantwoorden,to answer,A2
 bereid,prepared,A2
@@ -1261,6 +1286,7 @@ verantwoordelijk,responsible,A2
 vloeiend,fluent,A2
 voldoende,sufficient,A2
 zeer,very,A2
+A2,13,3
 aannemen,to hire,A2
 afwisselend,full of variety,A2
 beleefd,polite,A2
@@ -1285,6 +1311,7 @@ taak de,task the,A2
 verleden het,past the,A2
 verzorgingshuis het,care home the,A2
 voorbeeld het,example the,A2
+A2,13,4
 afval het,waste the,A2
 bak de,container the,A2
 batterij de,battery the,A2
@@ -1312,6 +1339,7 @@ terugbrengen,to return,A2
 verzamelen,to collect,A2
 vuilnis het,garbage the,A2
 weggooien,to throw away,A2
+A2,14,1
 aangifte de,report the,A2
 aanvragen,to apply for,A2
 aanwezig,present,A2
@@ -1339,6 +1367,7 @@ pasfoto de,passport photo the,A2
 paspoort het,passport the,A2
 persoon de,person the,A2
 verklaring de,declaration the,A2
+A2,14,2
 belasting de,tax the,A2
 brief de,letter the,A2
 Burgerservicenummer het,citizen service number the,A2
@@ -1362,6 +1391,7 @@ verzekering de,insurance the,A2
 werkdag de,working day the,A2
 zaak de,matter the,A2
 zorgverzekering de,health insurance the,A2
+A2,14,3
 aanvullend,additional,A2
 basis de,basis the,A2
 behandeling de,treatment the,A2
@@ -1384,6 +1414,7 @@ vergelijken,to compare,A2
 vergoeden,to reimburse,A2
 verzekeren,to insure,A2
 zorgkosten de,healthcare costs the,A2
+A2,14,4
 aanbieden,to offer,A2
 collectie de,collection the,A2
 concert het,concert the,A2
@@ -1409,6 +1440,7 @@ tv-serie de,TV series the,A2
 verbeteren,to improve,A2
 verbinding de,connection the,A2
 zodat,so that,A2
+A2,15,1
 doorbrengen,to spend,A2
 eeuw de,century the,A2
 fantastisch,fantastic,A2
@@ -1431,6 +1463,7 @@ totaal,totally,A2
 volhouden,to keep on doing,A2
 waard,worth,A2
 zo'n,such a,A2
+A2,15,2
 achter,behind,A2
 ballet het,ballet the,A2
 betekenen,to mean,A2
@@ -1459,6 +1492,7 @@ turnen,gymnastics the,A2
 vast,fixed,A2
 volleybal,volleyball,A2
 vreselijk,terrible,A2
+A2,15,3
 afdoen,to take off,A2
 anderhalf,one and a half,A2
 bovenkant de,top the,A2
@@ -1484,6 +1518,7 @@ verandering de,change the,A2
 voordat,before,A2
 zaak de,store the,A2
 zich scheren,to shave,A2
+A2,15,4
 bloedheet,very hot,A2
 cadeau het,gift the,A2
 extra,extra,A2
@@ -1509,6 +1544,7 @@ vriezen,to freeze,A2
 wereld de,world the,A2
 zee de,sea the,A2
 zich voelen,to feel,A2
+A2,16,1
 afspreken,to make an appointment,A2
 alleenstaand,single,A2
 cultuur de,culture the,A2
@@ -1534,6 +1570,7 @@ verliefd,in love,A2
 verwachting de,expectation the,A2
 zorg de,care the,A2
 zich voelen,to feel,A2
+A2,16,2
 Azië,Asia,A2
 bloem de,flower the,A2
 bruidsboeket het,wedding bouquet the,A2
@@ -1559,6 +1596,7 @@ vergeten,to forget,A2
 versturen,to send,A2
 verwachten,to expect,A2
 zich herinneren,to remember,A2
+A2,16,3
 aardig,nice,A2
 baard de,beard the,A2
 blond,blond,A2
@@ -1585,6 +1623,7 @@ verdrietig,sad,A2
 vrolijk,cheerful,A2
 zich schamen,to be ashamed,A2
 zulk(e),such,A2
+A2,16,4
 aanrecht het,countertop the,A2
 afwasmachine de,dishwasher the,A2
 afwassen,to do the dishes,A2
@@ -1607,6 +1646,7 @@ strijkijzer het,iron the,A2
 tand de,tooth the,A2
 tandenborstel de,toothbrush the,A2
 vuil,dirty,A2
+A2,17,1
 achteraf,afterwards,A2
 afschrijven,to take out,A2
 bankrekening de,bank account the,A2
@@ -1630,6 +1670,7 @@ steken,to plug,A2
 stekker de,plug the,A2
 stopcontact het,socket the,A2
 storing de,outage the,A2
+A2,17,2
 aanstaan,to be turned on,A2
 aanzetten,to turn on,A2
 bekend,known,A2
@@ -1655,6 +1696,7 @@ vervangen,to replace,A2
 vriezer de,freezer the,A2
 vullen,to fill,A2
 zuinig,energy efficient,A2
+A2,17,3
 afhankelijk,depending,A2
 bevroren,frozen,A2
 branden,to light up,A2
@@ -1680,6 +1722,7 @@ tijdstip het,time the,A2
 type het,type the,A2
 wassen,to wash,A2
 zolder de,attic the,A2
+A2,17,4
 aardrijkskunde de,geography the,A2
 bedrag het,amount the,A2
 biologie de,biology the,A2
@@ -1705,6 +1748,7 @@ uitstapje het,outing the,A2
 uniform het,uniform the,A2
 vak het,subject the,A2
 verplicht,obligated,A2
+A2,18,1
 advocaat de,lawyer the,A2
 automonteur de,car mechanic the,A2
 beroep het,occupation the,A2
@@ -1732,6 +1776,7 @@ universiteit de,university the,A2
 vroeger,in the old days,A2
 wetenschappelijk,scientific,A2
 zenuwachtig,nervous,A2
+A2,18,2
 aandacht de,attention the,A2
 actief,active,A2
 bezoeken,to visit,A2
@@ -1754,6 +1799,7 @@ sportclub de,sports club the,A2
 trouwens,by the way,A2
 volgen,to follow,A2
 workshop de,workshop the,A2
+A2,18,3
 afhangen van,to depend on,A2
 Arabisch,Arabic,A2
 bedoeling de,intention the,A2
@@ -1779,6 +1825,7 @@ taalcontact het,language contact the,A2
 uitspraak de,pronunciation the,A2
 uitspreken,to pronounce,A2
 voordeel het,advantage the,A2
+A2,18,4
 agenda de,agenda the,A2
 als,when,A2
 behoorlijk,rather,A2
@@ -1803,6 +1850,7 @@ wandelen,to walk,A2
 wedstrijd de,match the,A2
 zwembad het,swimming pool the,A2
 zwemmen,to swim,A2
+A2,19,1
 bedenken,to think of,A2
 bovendien,in addition,A2
 durven,to dare,A2
@@ -1826,6 +1874,7 @@ verzinnen,to make up,A2
 vriendschap de,friendship the,A2
 waarheid de,truth the,A2
 zwager de,brother-in-law the,A2
+A2,19,2
 afgesproken,it's a deal,A2
 bar de,bar the,A2
 bardienst de,bar duty the,A2
@@ -1848,6 +1897,7 @@ vieren,to celebrate,A2
 vrijwilligerswerk het,volunteer work the,A2
 wind de,wind the,A2
 zonde,a waste,A2
+A2,19,3
 aflopen,to end,A2
 bedrijf het,company the,A2
 behalve,except,A2
@@ -1877,6 +1927,7 @@ stil,silent,A2
 traditie de,tradition the,A2
 voorjaar het,spring the,A2
 zuiden het,south the,A2
+A2,19,4
 aanrijden,to hit,A2
 agent de,police officer the,A2
 baas de,boss the,A2
@@ -1903,6 +1954,7 @@ veilig,safe,A2
 veranderen,to change,A2
 voetganger de,pedestrian the,A2
 zebrapad het,zebra crossing the,A2
+A2,20,1
 arm de,arm the,A2
 been het,leg the,A2
 brand de,fire the,A2
@@ -1929,6 +1981,7 @@ vallen,to fall,A2
 verbranden,to burn,A2
 voorkomen,to prevent,A2
 weggaan,to leave,A2
+A2,20,2
 actie de,action the,A2
 basisschool de,primary school the,A2
 einde het,end the,A2
@@ -1952,6 +2005,7 @@ vorig,last,A2
 weg de,road the,A2
 wijk de,neighbourhood the,A2
 zwanger,pregnant,A2
+A2,20,3
 alarmnummer het,emergency number the,A2
 ambulance de,ambulance the,A2
 brandweer de,fire department the,A2
@@ -1977,6 +2031,35 @@ veiligheid de,safety the,A2
 vertrouwen,to trust,A2
 vreemd,strange,A2
 waarschuwen,to warn,A2
+A2,20,4
+achter,behind,A2
+ballet het,ballet the,A2
+betekenen,to mean,A2
+beweging de,exercise the,A2
+bos het,forest the,A2
+chagrijnig,grumpy,A2
+conditie de,condition the,A2
+discipline de,discipline the,A2
+humeur het,mood the,A2
+ict'er de,ICT worker the,A2
+judo de,judo the,A2
+onderdeel het,part the,A2
+ophouden,to stop,A2
+racefiets de,racing bicycle the,A2
+relaxed,relaxed,A2
+saai,boring,A2
+spier de,muscle the,A2
+spierpijn de,muscle pain the,A2
+sportief,sporty,A2
+sportschool de,gym the,A2
+stilzitten,to sit still,A2
+supporter de,supporter the,A2
+teamsport de,team sport the,A2
+totdat,until,A2
+turnen,gymnastics the,A2
+vast,fixed,A2
+volleybal,volleyball,A2
+vreselijk,terrible,A2
 A2/B1,1,1
 comfortabel,comfortable,A2
 dromen,to dream,A2
@@ -2108,19 +2191,19 @@ aanbod het,offer the,A2/B1
 afgelegen,remote,A2/B1
 bouwmarkt de,DIY store the,A2/B1
 Duitsland,Germany,A2/B1
-eind het,a long way,A2/B1
+eind het,long way/end the,A2/B1
 grens de,border the,A2/B1
 grond de,ground the,A2/B1
 hert het,deer the,A2/B1
 hoek de,corner the,A2/B1
-horeca de,hotels restaurants and cafés,A2/B1
+horeca de,hotels restaurants and cafés the,A2/B1
 landelijk,rural,A2/B1
 langsgaan,to visit,A2/B1
 onlangs,recently,A2/B1
 optie de,option the,A2/B1
 platteland het,countryside the,A2/B1
 polder de,polder the,A2/B1
-Randstad de,Randstad the (metropolitan region),A2/B1
+Randstad de,Randstad (metropolitan region) the,A2/B1
 sinds,since,A2/B1
 spits de,rush hour the,A2/B1
 spoor het,train tracks the,A2/B1
@@ -2286,7 +2369,7 @@ volwassen,adult,A2/B1
 waarderen,to appreciate,A2/B1
 wensen,to wish,A2/B1
 zodra,as soon as,A2/B1
-A2/B1,13,1
+B1,13,1
 aanhef de,salutation the,A2/B1
 beledigen,to insult,A2/B1
 benaderen,to approach,A2/B1
@@ -2315,7 +2398,7 @@ vakbond de,union the,A2/B1
 vergaderen,to have a meeting,A2/B1
 voortdurend,continuously,A2/B1
 zich verheugen op,to look forward to,A2/B1
-A2/B1,13,2
+B1,13,2
 betrokken,involved,A2/B1
 correct,correct,A2/B1
 corrigeren,to correct,A2/B1
@@ -2342,7 +2425,7 @@ verwisselen,to mix up,A2/B1
 wijzen,to point out,A2/B1
 zich vergissen,to make a mistake,A2/B1
 zorgvuldig,careful,A2/B1
-A2/B1,13,3
+B1,13,3
 accountant de,accountant the,A2/B1
 afwijken,to deviate,A2/B1
 beloning de,pay the,A2/B1
@@ -2366,7 +2449,7 @@ thuiswerken,to work from home,A2/B1
 uitbetalen,to pay,A2/B1
 wekelijks,weekly,A2/B1
 wetenschapper de,scientist the,A2/B1
-A2/B1,13,4
+B1,13,4
 afleiding de,distraction the,A2/B1
 bloot,bare,A2/B1
 braaf,well-behaved,A2/B1
@@ -2390,7 +2473,7 @@ tunnel de,tunnel the,A2/B1
 verlof het,leave the,A2/B1
 vertrouwelijk,confidential,A2/B1
 vredig,peaceful,A2/B1
-A2/B1,12,1
+B1,12,1
 aanspreken,to talk to,A2/B1
 begeleider de,supervisor the,A2/B1
 begeleiding de,guidance the,A2/B1
@@ -2419,7 +2502,7 @@ voortzetten,to continue,A2/B1
 wijze de,manner the,A2/B1
 wo het,university education the,A2/B1
 zich inleven,to empathize,A2/B1
-A2/B1,12,2
+B1,12,2
 aankondiging de,announcement the,A2/B1
 aanwezigheid de,presence the,A2/B1
 aarzelen,to hesitate,A2/B1
@@ -2440,7 +2523,7 @@ uitkijken naar,to look forward to,A2/B1
 verderop,further down,A2/B1
 voorin,in the front,A2/B1
 voorstellen,to suggest,A2/B1
-A2/B1,12,3
+B1,12,3
 aangenaam,pleased,A2/B1
 administratief,administrative,A2/B1
 begrijpelijk,understandable,A2/B1
@@ -2465,7 +2548,7 @@ uitkomst de,outcome the,A2/B1
 voorafgaand,prior (to),A2/B1
 wellicht,maybe,A2/B1
 zwak,weak,A2/B1
-A2/B1,12,4
+B1,12,4
 afkeer de,aversion the,A2/B1
 doorgaans,usually,A2/B1
 gekoeld,refrigerated,A2/B1
@@ -2494,7 +2577,7 @@ waarmaken,to realize,A2/B1
 winst de,profit the,A2/B1
 woedend,furious,A2/B1
 zonsopgang de,sunrise the,A2/B1
-A2/B1,11,1
+B1,11,1
 bezeren,to hurt,A2/B1
 binnenkant de,inside the,A2/B1
 blessure de,injury the,A2/B1
@@ -2516,7 +2599,7 @@ verwijzen,to refer,A2/B1
 vocht het,fluid the,A2/B1
 voorschrijven,to prescribe,A2/B1
 zich verplaatsen,to move,A2/B1
-A2/B1,11,2
+B1,11,2
 afkomen van,to get rid of,A2/B1
 balans de,balance the,A2/B1
 beschouwen,to consider,A2/B1
@@ -2546,7 +2629,7 @@ voeding de,nutrition the,A2/B1
 volop,greatly,A2/B1
 werkelijkheid de,reality the,A2/B1
 essentieel,essential,A2/B1
-A2/B1,11,3
+B1,11,3
 atleet de,athlete the,A2/B1
 calorie de,calorie the,A2/B1
 cruciaal,crucial,A2/B1
@@ -2571,7 +2654,7 @@ vitamine de,vitamin the,A2/B1
 zich afvragen,to wonder,A2/B1
 zich bezighouden,to busy oneself,A2/B1
 zich ontspannen,to relax,A2/B1
-A2/B1,11,4
+B1,11,4
 bacterie de,bacterium the,A2/B1
 beoordelen,to assess,A2/B1
 beugel de,braces the,A2/B1
@@ -2597,7 +2680,7 @@ trauma het,trauma the,A2/B1
 trekken,to pull,A2/B1
 verstandskies de,wisdom tooth the,A2/B1
 verwijsbrief de,referral letter the,A2/B1
-A2/B1,10,1
+B1,10,1
 aanraken,to touch,A2/B1
 alternatief het,alternative the,A2/B1
 belangstelling de,interest the,A2/B1
@@ -2623,7 +2706,7 @@ toegeven,to admit,A2/B1
 toestel het,apparatus the,A2/B1
 vernieuwing de,innovation the,A2/B1
 wantrouwen het,mistrust the,A2/B1
-A2/B1,10,2
+B1,10,2
 afzender de,sender the,A2/B1
 besmetten,to infect,A2/B1
 bevatten,to contain,A2/B1
@@ -2650,7 +2733,7 @@ virus het,virus the,A2/B1
 voorlichting de,information the,A2/B1
 zoekmachine de,search engine the,A2/B1
 zolang,as long as,A2/B1
-A2/B1,10,3
+B1,10,3
 aangezien,since,A2/B1
 balie de,reception desk the,A2/B1
 beleid het,policy the,A2/B1
@@ -2676,7 +2759,7 @@ verschijnen,to appear,A2/B1
 verspilling de,waste the,A2/B1
 vlug,quickly,A2/B1
 vooruit,forward,A2/B1
-A2/B1,10,4
+B1,10,4
 afname de,decline the,A2/B1
 arm,poor,A2/B1
 armoede de,poverty the,A2/B1
@@ -2702,7 +2785,7 @@ toekomstig,future,A2/B1
 tolerantie de,tolerance the,A2/B1
 uitvinding de,invention the,A2/B1
 voedsel het,food the,A2/B1
-A2/B1,9,1
+B1,9,1
 aanspreken,to talk to,A2/B1
 alarm het,alarm the,A2/B1
 beheer het,management the,A2/B1
@@ -2730,7 +2813,7 @@ uitsluitend,only,A2/B1
 verdacht,suspicious,A2/B1
 verlies het,loss the,A2/B1
 vertrouwenspersoon de,confidential adviser the,A2/B1
-A2/B1,9,2
+B1,9,2
 (buurt)preventie de,(neighbourhood) watch the,A2/B1
 alert,alert,A2/B1
 bedreigen,to threaten,A2/B1
@@ -2754,7 +2837,7 @@ tak de,branch the,A2/B1
 vernieling de,vandalism the,A2/B1
 zich aansluiten,to join,A2/B1
 zonnebril de,sunglasses the,A2/B1
-A2/B1,9,3
+B1,9,3
 aanrijding de,collision the,A2/B1
 afslag de,exit the,A2/B1
 automobilist de,driver of a car the,A2/B1
@@ -2782,7 +2865,7 @@ voorgaan,to go ahead,A2/B1
 voorrang de,right of way the,A2/B1
 vooruit,forward,A2/B1
 vrachtwagen de,truck the,A2/B1
-A2/B1,9,4
+B1,9,4
 besluit het,decision the,A2/B1
 diep,deep,A2/B1
 EHBO de,first aid the,A2/B1
@@ -2939,7 +3022,7 @@ zakelijk,business,A2/B1
 zich richten op,to focus on,A2/B1
 A2/B1,7,2
 avontuurlijk,adventurous,A2/B1
-bejaarde de,the elderly person the,A2/B1
+bejaarde de,elderly person the,A2/B1
 chillen,to chill,A2/B1
 doorzetten,to hang in,A2/B1
 ervaren,to experience,A2/B1
@@ -3327,7 +3410,7 @@ suggestie de,suggestion the,A2/B1
 terugbellen,to call back,A2/B1
 zich aanpassen,to adapt,A2/B1
 zilver,silver,A2/B1
-A2/B1,14,1
+B1,14,1
 andersom,the other way around,A2/B1
 anderzijds,on the other hand,A2/B1
 besturen,to run,A2/B1
@@ -3352,7 +3435,7 @@ vrijblijvend,without obligation,A2/B1
 wegblijven,to not show up,A2/B1
 werven,to recruit,A2/B1
 zich inzetten,to do one's best,A2/B1
-A2/B1,14,2
+B1,14,2
 aankijken,to look at,A2/B1
 agressief,aggressive,A2/B1
 arrogant,arrogant,A2/B1
@@ -3380,7 +3463,7 @@ verward,confused,A2/B1
 voetballer de,football player the,A2/B1
 zangeres de,singer the,A2/B1
 zenuwen de,nerves the,A2/B1
-A2/B1,14,3
+B1,14,3
 Afrikaans,African,A2/B1
 afschuwelijk,terrible,A2/B1
 afspelen,to play,A2/B1
@@ -3406,7 +3489,7 @@ viool de,violin the,A2/B1
 volks,folk,A2/B1
 zang de,singing the,A2/B1
 zanger de,singer the,A2/B1
-A2/B1,14,4
+B1,14,4
 alsmaar,continuously,A2/B1
 benodigd,required,A2/B1
 cultureel,cultural,A2/B1
@@ -3430,7 +3513,7 @@ toekomen aan,to get around to,A2/B1
 uitspraak de,statement the,A2/B1
 verplichting de,obligation the,A2/B1
 verwaarlozen,to neglect,A2/B1
-A2/B1,15,1
+B1,15,1
 bekendmaken,to announce,A2/B1
 betrokkenheid de,involvement the,A2/B1
 ceremonieel,ceremonial,A2/B1
@@ -3461,7 +3544,7 @@ volk het,people the,A2/B1
 voorlezen,to read out,A2/B1
 voorstander de,supporter the,A2/B1
 zakendoen,to do business,A2/B1
-A2/B1,15,2
+B1,15,2
 betaalbaar,affordable,A2/B1
 burger de,citizen the,A2/B1
 demonstreren,to demonstrate,A2/B1
@@ -3487,7 +3570,7 @@ verkiezing de,election the,A2/B1
 visie de,vision the,A2/B1
 zetel de,seat the,A2/B1
 zich verdiepen,to delve (into),A2/B1
-A2/B1,15,3
+B1,15,3
 afkomst de,origins the,A2/B1
 afwijkend,different,A2/B1
 boer de,farmer the,A2/B1
@@ -3513,7 +3596,7 @@ sindsdien,since then,A2/B1
 vee het,cattle the,A2/B1
 veganistisch,vegan,A2/B1
 verrassend,surprising,A2/B1
-A2/B1,15,4
+B1,15,4
 belastingaangifte de,tax declaration the,A2/B1
 buitenlander de,foreigner the,A2/B1
 fase de,stage the,A2/B1

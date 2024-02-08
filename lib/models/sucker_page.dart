@@ -13,10 +13,15 @@ class SuckerPage extends StatelessWidget {
   final String whatWasIdoing;
   final int row;
   final int column;
+  final String level;
 
-
-  SuckerPage({required this.rightAnswers, required this.wrongAnswers,
-    required this.whatWasIdoing, required this.row, required this.column});
+  SuckerPage(
+      {required this.rightAnswers,
+      required this.wrongAnswers,
+      required this.whatWasIdoing,
+      required this.row,
+      required this.column,
+      required this.level});
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +47,14 @@ class SuckerPage extends StatelessWidget {
                   onPressed: () {
                     // Navigate to a new quiz page or MyVerbs based on whatWasIdoing
                     if (whatWasIdoing == "questions") {
-                      print(row);
-                      print("and");
-                      print(column);
+                      //print(row);
+                      //print("and");
+                      //print(column);
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => MyHomePage(row: row, column: column)),
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                MyHomePage(level: level, row: row, column: column)),
                       );
 
                       //Navigator.pop(context);
@@ -64,7 +71,7 @@ class SuckerPage extends StatelessWidget {
                   onPressed: () async {
                     // Determine if the quizlet was completely correct
                     completelyCorrect = wrongAnswers == 0;
-                    print(selectedQuizlet);
+                    //print(selectedQuizlet);
                     completelyCorrect = wrongAnswers == 0;
 
                     // Update quizlet completion status based on completelyCorrect
