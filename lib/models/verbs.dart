@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:simple_app_simple/models/sucker_page.dart';
 
+import '../constants.dart';
+
 class MyVerbs extends StatefulWidget {
   const MyVerbs({super.key});
 
@@ -38,15 +40,17 @@ class _MyVerbsState extends State<MyVerbs> {
   String perfectum = "";
   String translation = "";
   int displayedCardsCount = 0;
+  bool solutionGiven = false;
+  bool isCorrect = false;
 
   List<Widget> progressDots = List.generate(
     10,
-        (index) => Padding(
-      padding: EdgeInsets.symmetric(horizontal: 2.0),
+    (index) => const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
       // Adjust the horizontal padding as needed
       child: Icon(
         Icons.circle,
-        size: 30.0, // Set the size as needed
+        size: 20.0, // Set the size as needed
         color: Colors.white,
       ),
     ),
@@ -54,12 +58,18 @@ class _MyVerbsState extends State<MyVerbs> {
 
   void updateProgress(bool isCorrect) {
     int indexToUpdate = displayedCardsCount - 1;
-    Icon updatedIcon = isCorrect
-        ? Icon(Icons.check, color: Colors.green, size: 30.0)
-        : Icon(Icons.close, color: Colors.red, size: 30.0);
+    Widget updatedDot = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      // Adjust the horizontal padding as needed
+      child: Icon(
+        isCorrect ? Icons.circle : Icons.circle,
+        color: isCorrect ? Colors.green : Colors.red,
+        size: 20.0, // Set the size as needed
+      ),
+    );
 
     setState(() {
-      progressDots[indexToUpdate] = updatedIcon;
+      progressDots[indexToUpdate] = updatedDot;
     });
   }
 
@@ -94,7 +104,7 @@ class _MyVerbsState extends State<MyVerbs> {
           builder: (context) => SuckerPage(
             rightAnswers: correctCounter,
             wrongAnswers: wrongCounter,
-            whatWasIdoing : "verbs",
+            whatWasIdoing: "verbs",
             level: "A0",
             row: 999,
             column: 999,
@@ -123,31 +133,31 @@ class _MyVerbsState extends State<MyVerbs> {
     int randomPrompt = Random().nextInt(3);
     switch (randomPrompt) {
       case 0:
-        prompt = "imperfectum";
+        prompt = "Imperfectum";
         correctAnswer = imperfectum;
-        notPrompt1 = "translation";
-        notPrompt2 = "perfectum";
+        notPrompt1 = "Translation";
+        notPrompt2 = "Perfectum";
         whichCase = 0;
         break;
       case 1:
-        prompt = "perfectum";
+        prompt = "Perfectum";
         correctAnswer = perfectum;
-        notPrompt1 = "translation";
-        notPrompt2 = "imperfectum";
+        notPrompt1 = "Translation";
+        notPrompt2 = "Imperfectum";
         whichCase = 1;
         break;
       case 2:
         prompt = "translation";
         correctAnswer = translation;
-        notPrompt1 = "imperfectum";
-        notPrompt2 = "perfectum";
+        notPrompt1 = "Imperfectum";
+        notPrompt2 = "Perfectum";
         whichCase = 2;
         break;
       default:
-        prompt = "imperfectum";
+        prompt = "Imperfectum";
         correctAnswer = imperfectum;
-        notPrompt1 = "translation";
-        notPrompt2 = "perfectum";
+        notPrompt1 = "Translation";
+        notPrompt2 = "Perfectum";
         whichCase = 3;
     }
 
@@ -159,7 +169,23 @@ class _MyVerbsState extends State<MyVerbs> {
 
   // Function to handle user input
   void handleUserInput(String input) {
-    bool isCorrect = input.toLowerCase() == correctAnswer.toLowerCase();
+    String sanitizedInput = input.trim().toLowerCase();
+
+    // Check if the input starts with "to "
+    if (sanitizedInput.startsWith("to ")) {
+      // Remove "to " from the input
+      sanitizedInput = sanitizedInput.substring(3);
+    }
+
+    // Split the correct answer by "/"
+    List<String> correctAnswers = correctAnswer.split("/");
+
+    // Check if any part of the correct answer matches the input
+    isCorrect =
+        correctAnswers.any((answer) => sanitizedInput == answer.toLowerCase());
+
+    //bool isCorrect = sanitizedInput == correctAnswer.toLowerCase();
+    //bool isCorrect = input.toLowerCase() == correctAnswer.toLowerCase();
 
     // Update counters
     if (isCorrect) {
@@ -172,7 +198,12 @@ class _MyVerbsState extends State<MyVerbs> {
 
     // Update UI based on correctness
     setState(() {
-      if (isCorrect) {
+      //print( "im in set state");
+      solutionGiven = true;
+      displayAdditionalInfo(solutionGiven, isCorrect);
+      showNextButton = true;
+      updateProgress(isCorrect);
+      /*if (isCorrect) {
         feedbackMessage = "Correct! The solution is: $correctAnswer";
         updateProgress(isCorrect);
         showNextButton = true; // Show the "Next" button
@@ -181,14 +212,33 @@ class _MyVerbsState extends State<MyVerbs> {
         updateProgress(isCorrect);
         showNextButton = true; // Show the "Next" button
       }
-      resultMessage = "Correct Answers: $correctCounter | Wrong Answers: $wrongCounter";
-        // style: TextStyle(fontSize: 18),
-        // textAlign: TextAlign.center,
-
+      resultMessage =
+          "Correct Answers: $correctCounter | Wrong Answers: $wrongCounter";
+      // style: TextStyle(fontSize: 18),
+      // textAlign: TextAlign.center,*/
     });
   }
 
-  Widget displayAdditionalInfo() {
+  double shrinkFont(String word){
+    List<String> words = word.split(' ');
+
+// Determine the length of the longest word
+    //int maxLength = words.fold(0, (max, word) => word.length > max ? word.length : max);
+
+// Check if any word is longer than 13 characters
+    bool anyLongerThan13 = words.any((word) => word.length > 13);
+
+// Set the font size conditionally
+    double fontSize = anyLongerThan13 ? 16.0 : 22.0;
+
+    return fontSize;
+  }
+
+  Widget displayAdditionalInfo(bool solutionGiven, bool isCorrect) {
+
+    //print( "im in add info");
+    //print(solutionGiven);
+    //print(isCorrect);
     if (!hintsOn) {
       return SizedBox.shrink(); // Return an empty widget if hints are off
     }
@@ -197,46 +247,468 @@ class _MyVerbsState extends State<MyVerbs> {
     switch (whichCase) {
       case 0:
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 10),
-            Text(
-              "$notPrompt1 = $translation",
-              style: TextStyle(fontSize: 20, color: Colors.white),
+          children: [Container(
+            padding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: kPrimaryGradient, // Apply the gradient background
+                    borderRadius: BorderRadius.circular(10),  // Apply the gradient background
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        "Imperfectum:",
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  // Add space between "Infinitive" and the divider
+                  Container(
+                    height: 30,
+                    // Adjust the height of the divider according to your UI design
+                    width: 2,
+                    // Set the width of the vertical divider
+                    color: Colors.white, // Set color of the divider
+                  ),
+                  SizedBox(width: 10),
+                  // Add space between the divider and "$infinitive"
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        solutionGiven
+                            ? isCorrect
+                            ? "$imperfectum"
+                            : "$imperfectum"
+                            : "?",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: solutionGiven
+                              ? isCorrect
+                              ? Colors.green // Dark green color
+                              : Colors.red // Dark red color
+                              : Colors.white, // Default color
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            Text(
-              "$notPrompt2 = $perfectum",
-              style: TextStyle(fontSize: 20, color: Colors.white),
+          ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+              child: Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: kPrimaryGradient, // Apply the gradient background
+                    borderRadius: BorderRadius.circular(10),  // Apply the gradient background
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "Perfectum:",
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    // Add space between "Infinitive" and the divider
+                    Container(
+                      height: 30,
+                      // Adjust the height of the divider according to your UI design
+                      width: 2,
+                      // Set the width of the vertical divider
+                      color: Colors.white, // Set color of the divider
+                    ),
+                    SizedBox(width: 10),
+                    // Add space between the divider and "$infinitive"
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "$perfectum",
+                          style: TextStyle(
+                              fontSize: shrinkFont(perfectum),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+              child: Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: kPrimaryGradient, // Apply the gradient background
+                    borderRadius: BorderRadius.circular(10),  // Apply the gradient background
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "Translation:",
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    // Add space between "Infinitive" and the divider
+                    Container(
+                      height: 30,
+                      // Adjust the height of the divider according to your UI design
+                      width: 2,
+                      // Set the width of the vertical divider
+                      color: Colors.white, // Set color of the divider
+                    ),
+                    SizedBox(width: 10),
+                    // Add space between the divider and "$infinitive"
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "$translation",
+                          style: TextStyle(
+                              fontSize: shrinkFont(translation),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         );
       case 1:
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 10),
-            Text(
-              "$notPrompt1 = $translation",
-              style: TextStyle(fontSize: 20, color: Colors.white),
+          children: [Container(
+            padding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: kPrimaryGradient, // Apply the gradient background
+                    borderRadius: BorderRadius.circular(10),  // Apply the gradient background
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        "Imperfectum:",
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  // Add space between "Infinitive" and the divider
+                  Container(
+                    height: 30,
+                    // Adjust the height of the divider according to your UI design
+                    width: 2,
+                    // Set the width of the vertical divider
+                    color: Colors.white, // Set color of the divider
+                  ),
+                  SizedBox(width: 10),
+                  // Add space between the divider and "$infinitive"
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        "$imperfectum",
+                        style: TextStyle(
+                            fontSize: shrinkFont(imperfectum),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            Text(
-              "$notPrompt2 = $imperfectum",
-              style: TextStyle(fontSize: 20, color: Colors.white),
+          ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+              child: Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: kPrimaryGradient, // Apply the gradient background
+                    borderRadius: BorderRadius.circular(10),  // Apply the gradient background
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "Perfectum:",
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    // Add space between "Infinitive" and the divider
+                    Container(
+                      height: 30,
+                      // Adjust the height of the divider according to your UI design
+                      width: 2,
+                      // Set the width of the vertical divider
+                      color: Colors.white, // Set color of the divider
+                    ),
+                    SizedBox(width: 10),
+                    // Add space between the divider and "$infinitive"
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          solutionGiven
+                              ? isCorrect
+                              ? "$perfectum"
+                              : "$perfectum"
+                              : "?",
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: solutionGiven
+                                ? isCorrect
+                                ? Colors.green // Dark green color
+                                : Colors.red // Dark red color
+                                : Colors.white, // Default color
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(padding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+              child: Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: kPrimaryGradient, // Apply the gradient background
+                    borderRadius: BorderRadius.circular(10),  // Apply the gradient background
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "Translation:",
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    // Add space between "Infinitive" and the divider
+                    Container(
+                      height: 30,
+                      // Adjust the height of the divider according to your UI design
+                      width: 2,
+                      // Set the width of the vertical divider
+                      color: Colors.white, // Set color of the divider
+                    ),
+                    SizedBox(width: 10),
+                    // Add space between the divider and "$infinitive"
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "$translation",
+                          style: TextStyle(
+                              fontSize: shrinkFont(translation),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         );
       case 2:
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 10),
-            Text(
-              "$notPrompt1 = $imperfectum",
-              style: TextStyle(fontSize: 20, color: Colors.white),
+          children: [Container(padding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: kPrimaryGradient, // Apply the gradient background
+                    borderRadius: BorderRadius.circular(10),  // Apply the gradient background
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        "Imperfectum:",
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  // Add space between "Infinitive" and the divider
+                  Container(
+                    height: 30,
+                    // Adjust the height of the divider according to your UI design
+                    width: 2,
+                    // Set the width of the vertical divider
+                    color: Colors.white, // Set color of the divider
+                  ),
+                  SizedBox(width: 10),
+                  // Add space between the divider and "$infinitive"
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        "$imperfectum",
+                        style: TextStyle(
+                            fontSize: shrinkFont(imperfectum),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            Text(
-              "$notPrompt2 = $perfectum",
-              style: TextStyle(fontSize: 20, color: Colors.white),
+          ),
+            Container(padding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+              child: Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: kPrimaryGradient, // Apply the gradient background
+                    borderRadius: BorderRadius.circular(10),  // Apply the gradient background
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "Perfectum:",
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    // Add space between "Infinitive" and the divider
+                    Container(
+                      height: 30,
+                      // Adjust the height of the divider according to your UI design
+                      width: 2,
+                      // Set the width of the vertical divider
+                      color: Colors.white, // Set color of the divider
+                    ),
+                    SizedBox(width: 10),
+                    // Add space between the divider and "$infinitive"
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "$perfectum",
+                          style: TextStyle(
+                              fontSize: shrinkFont(perfectum),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(padding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+              child: Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: kPrimaryGradient, // Apply the gradient background
+                    borderRadius: BorderRadius.circular(10),  // Apply the gradient background
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "Translation:",
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    // Add space between "Infinitive" and the divider
+                    Container(
+                      height: 30,
+                      // Adjust the height of the divider according to your UI design
+                      width: 2,
+                      // Set the width of the vertical divider
+                      color: Colors.white, // Set color of the divider
+                    ),
+                    SizedBox(width: 10),
+                    // Add space between the divider and "$infinitive"
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          solutionGiven
+                              ? isCorrect
+                              ? translation
+                              : translation
+                              : "?",
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: solutionGiven
+                                ? isCorrect
+                                ? Colors.green // Dark green color
+                                : Colors.red // Dark red color
+                                : Colors.white, // Default color
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         );
@@ -255,29 +727,43 @@ class _MyVerbsState extends State<MyVerbs> {
             Navigator.of(context).pop();
           },
         ),
-        title: Text(
-          "FLASH DUTCH",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        title: Padding(
+          padding: EdgeInsets.only(top: 16.0),
+          child: Text(
+            "FLASH DUTCH",
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.pink,
+        //backgroundColor: Colors.pink,
         elevation: 0,
         actions: [
           // Add a button to toggle hints
-          TextButton(
-            onPressed: () {
-              // Toggle the hintsOn variable
-              setState(() {
-                hintsOn = !hintsOn;
-              });
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.black,
-              backgroundColor: Colors.white,
-            ),
-            child: Text(
-              hintsOn ? 'Hints: ON' : 'Hints: OFF',
-              style: TextStyle(color: Colors.black),
+          Padding(
+            padding: EdgeInsets.only(top: 16.0, right: 8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: kPrimaryGradient,
+                borderRadius:
+                    BorderRadius.circular(16), // Adjust the radius as needed
+              ),
+              child: TextButton(
+                onPressed: () {
+                  // Toggle the hintsOn variable
+                  setState(() {
+                    hintsOn = !hintsOn;
+                  });
+                },
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.black,
+                  backgroundColor:
+                      Colors.transparent, // Set background color to transparent
+                ),
+                child: Text(
+                  hintsOn ? 'Hints: ON' : 'Hints: OFF',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
             ),
           ),
         ],
@@ -295,12 +781,56 @@ class _MyVerbsState extends State<MyVerbs> {
                 children: progressDots,
               ),
             ),
-            SizedBox(height: 60),
-            Text(
-              "Infinitive: $infinitive",
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-            ),
             SizedBox(height: 10),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 4), // Add padding around the container
+              child: Container(
+                padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    gradient: kPrimaryGradient, // Apply the gradient background
+                    borderRadius: BorderRadius.circular(10), // Set rounded corners
+                  ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "Infinitive:",
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    // Add space between "Infinitive" and the divider
+                    Container(
+                      height: 30,
+                      // Adjust the height of the divider according to your UI design
+                      width: 2,
+                      // Set the width of the vertical divider
+                      color: Colors.white, // Set color of the divider
+                    ),
+                    SizedBox(width: 10),
+                    // Add space between the divider and "$infinitive"
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "$infinitive",
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            /*SizedBox(height: 10),
             if (prompt == "translation")
               Text(
                 "Translate to English",
@@ -310,9 +840,9 @@ class _MyVerbsState extends State<MyVerbs> {
               Text(
                 "Conjugate in $prompt",
                 style: TextStyle(fontSize: 24, fontStyle: FontStyle.italic),
-              ),
-            SizedBox(height: 20),
-            displayAdditionalInfo(),
+              ),*/
+            //SizedBox(height: 20),
+            displayAdditionalInfo(solutionGiven, isCorrect),
             //SizedBox(height: 10),
             // Display feedback message
             Text(
@@ -329,33 +859,73 @@ class _MyVerbsState extends State<MyVerbs> {
               style: TextStyle(fontSize: 18),
               textAlign: TextAlign.center,
             ),*/
-            SizedBox(height: 20),
+            SizedBox(height: 5),
             // Only show the TextField when the "Next" button is not visible
             if (!showNextButton)
-              TextField(
-                onSubmitted: (input) {
-                  // Handle user input
-                  handleUserInput(input);
-                },
-                decoration: InputDecoration(
-                  hintText: "Type your answer here",
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.all(10),
+              Container(
+                child: TextField(
+                  onSubmitted: (input) {
+                    // Handle user input
+                    handleUserInput(input);
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Type your answer here",
+                    border: InputBorder.none,
+                    // Remove default border
+                    enabledBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Colors.tealAccent, width: 2),
+                      // Set border color to green
+                      borderRadius:
+                          BorderRadius.circular(8), // Set border radius
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Colors.tealAccent, width: 2),
+                      // Set border color to green
+                      borderRadius:
+                          BorderRadius.circular(8), // Set border radius
+                    ),
+                    contentPadding: EdgeInsets.all(10),
+                  ),
                 ),
               ),
+
             SizedBox(height: 20),
             // Show the "Next" button when it's visible
             if (showNextButton)
-              ElevatedButton(
-                onPressed: () {
-                  // Load a new verb for the next question
-                  selectRandomVerb();
-                },
-                child: Text("Next"),
-              ),
-            SizedBox(height: 20),
-            // Display counters
+              Container(
+                decoration: BoxDecoration(
+                  gradient: kPrimaryGradient,
+                  borderRadius:
+                      BorderRadius.circular(8), // Adjust the radius as needed
+                ),
+                child: ElevatedButton(
+                  onPressed: () {
 
+                    solutionGiven = false;
+                    isCorrect = false;
+                    // Load a new verb for the next question
+                    selectRandomVerb();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.transparent,
+                    // Set background color to transparent
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                          8), // Adjust the radius as needed
+                    ),
+                  ),
+                  child: Text(
+                    "Next",
+                    style: TextStyle(
+                      fontSize: 18, // Adjust the font size as needed
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

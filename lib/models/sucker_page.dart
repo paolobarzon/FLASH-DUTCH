@@ -81,7 +81,7 @@ class SuckerPage extends StatelessWidget {
 
                     // Navigate to the home page with the completelyCorrect parameter
                     Navigator.pop(context, completelyCorrect);
-                    Navigator.pop(context, completelyCorrect);
+                    //Navigator.pop(context, completelyCorrect);
                   },
                   child: Text('Home'),
                 ),
