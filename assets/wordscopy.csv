@@ -16,7 +16,7 @@ parkeren,to park,A1
 prettig,convenient,A1
 reistijd de,travel time the,A1
 rijbewijs het,driving licence the,A1
-rit de (het ritje),drive the,A1
+rit de,drive the,A1
 slecht,bad,A1
 stoppen,to stop,A1
 treinkaartje het,train ticket the,A1
@@ -154,7 +154,7 @@ vrij,free,A1
 A0,2,3
 apotheek de,pharmacy the,A1
 bijsluiter de,leaflet the,A1
-doos de (het doosje),box the,A1
+doos de,box the,A1
 dosering de,dosage the,A1
 drogist de,drugstore the,A1
 gebruik het,use the,A1
@@ -179,7 +179,7 @@ verder,further,A1
 verschil het,difference the,A1
 wakker,awake,A1
 wc-papier het,toilet paper the,A1
-zoon de (het zoontje),son the,A1
+zoon de,son the,A1
 zwaar,heavy,A1
 A0,2,4
 alcohol de,alcohol the,A1
@@ -294,7 +294,7 @@ hond de,dog the,A1
 huisdier het,pet the,A1
 ineens,suddenly,A1
 klagen,to complain,A1
-laten (alleen laten),to leave,A1
+(alleen) laten,to leave,A1
 oplossing de,solution the,A1
 overlast de,nuisance the,A1
 overleggen,to discuss,A1
@@ -369,7 +369,7 @@ kast de,cabinet the,A1
 kiezen,to choose,A1
 kleding de,clothing the,A1
 kleur de,colour the,A1
-la de (de lades),drawer the,A1
+la de,drawer the,A1
 lamp de,lamp the,A1
 licht,light,A1
 licht het,light the,A1
@@ -432,7 +432,7 @@ soep de,soup the,A1
 staan,to stand,A1
 straks,later,A1
 toetje het,dessert the,A1
-ui de (uien),onion the,A1
+ui de,onion the,A1
 vinden,to find,A1
 water het,water the,A1
 wijn de,wine the,A1
@@ -440,9 +440,9 @@ yoghurt de,yogurt the,A1
 zout het,salt the,A1
 A1,5,2
 avondeten het,dinner the,A1
-boterham de (boterhammen),sandwich the,A1
+boterham de,sandwich the,A1
 broodje het,sandwich the,A1
-ding het (dingen),thing the,A1
+ding het,thing the,A1
 doordeweeks,during the week,A1
 gek,crazy,A1
 havermout de,oatmeal the,A1
@@ -450,7 +450,7 @@ jam de,jam the,A1
 koud,cold,A1
 lijken,to seem,A1
 lunchen,to have lunch,A1
-Nederlander de (Nederlanders),Dutchman the,A1
+Nederlander de,Dutchman the,A1
 noedels de,noodles the,A1
 nooit,never,A1
 ontbijt het,breakfast the,A1
@@ -474,7 +474,7 @@ cola de,cola the,A1
 dik,big,A1
 frisdrank de,soda the,A1
 gelijk hebben,to be right,A1
-hamburger de (hamburgers),hamburger the,A1
+hamburger de,hamburger the,A1
 ieder,every,A1
 leven,to live,A1
 meer,more,A1
@@ -501,10 +501,10 @@ daarom,therefore,A1
 haring de,herring the,A1
 internationaal,international,A1
 laat,late,A1
-land het (landen),country the,A1
-manier de (manieren),manner the,A1
+land het,country the,A1
+manier de,manner the,A1
 mayonaise de,mayonnaise the,A1
-mens de (mensen),man,A1
+mens de,man,A1
 overal,everywhere,A1
 plaats de,space the,A1
 proeven,to taste,A1
@@ -526,7 +526,7 @@ daar,there,A1
 druk,busy,A1
 een beetje,a little bit,A1
 eindelijk,finally,A1
-groet de (groeten),greeting the,A1
+groet de,greeting the,A1
 lekker,nice,A1
 lopen,to walk,A1
 moeder de,mother the,A1
@@ -622,8 +622,8 @@ volgend,next,A1
 zeker,definitely,A1
 A1,7,1
 ander,other,A1
-appel de (appels),apple the,A1
-banaan de (bananen),banana the,A1
+appel de,apple the,A1
+banaan de,banana the,A1
 bijna,almost,A1
 boodschappen de,groceries the,A1
 doen,to do,A1
@@ -633,7 +633,7 @@ fruit het,fruit the,A1
 groente de,vegetable the,A1
 kip de,chicken the,A1
 kopen,to buy,A1
-lijst de (het lijstje),list the,A1
+lijst de,list the,A1
 maken,to make,A1
 markt de,market the,A1
 meer,more,A1
@@ -642,19 +642,18 @@ praten,to talk,A1
 rijst de,rice the,A1
 supermarkt de,supermarket the,A1
 thuis,at home,A1
-tomaat de (tomaten),tomato the,A1
+tomaat de,tomato the,A1
 vis de,fish the,A1
 vlees het,meat the,A1
 we,we,A1
-wortel de (wortels),carrot the,A1
+wortel de,carrot the,A1
 A1,7,2
-aardappel de (aardappels),potato the,A1
+aardappel de,potato the,A1
 alsjeblieft,please / here you go,A1
-alstublieft,please / here you go,A1
 anders,else,A1
 dag,bye,A1
 dan,then,A1
-ei het (de eieren),egg the,A1
+ei het,egg the,A1
 fijn,nice,A1
 goed,good,A1
 gram de,gram the,A1
@@ -819,7 +818,7 @@ oud,old,A1
 poes de,cat the,A1
 restaurant het,restaurant the,A1
 sporten,to do sports,A1
-week de (weken),week the,A1
+week de,week the,A1
 weekend het,weekend the,A1
 welkom,welcome,A1
 wie,who,A1
@@ -1316,7 +1315,7 @@ afval het,waste the,A2
 bak de,container the,A2
 batterij de,battery the,A2
 beker de,cup the,A2
-blik het (het blikje),can the,A2
+blik het,can the,A2
 chemisch,chemical,A2
 container de,container the,A2
 deel het,part the,A2
@@ -2856,7 +2855,7 @@ schakelen,to shift gears,A2/B1
 smal,narrow,A2/B1
 stuur het,steering wheel the,A2/B1
 tanken,to fill up (with fuel),A2/B1
-tankstation het,petrol station the (US: gas station the),A2/B1
+tankstation het,petrol/gas station the,A2/B1
 theorie de,theory the,A2/B1
 tot,until,A2/B1
 uitdelen,to hand out,A2/B1
@@ -2996,7 +2995,7 @@ zich realiseren,to realize,A2/B1
 zojuist,just a moment ago,A2/B1
 A2/B1,7,1
 achterstand de,deficiency the,A2/B1
-asielzoekerscentrum het (azc),asylum seekers' centre the,A2/B1
+asielzoekerscentrum (AZC) het,asylum seekers' centre the,A2/B1
 automaat de,machine the,A2/B1
 band de,bond the,A2/B1
 begeleiden,to guide,A2/B1
