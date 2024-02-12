@@ -14,19 +14,21 @@ import '../constants.dart';
 import '../screens/Choosing Thema/choosing_thema.dart';
 
 //bool IsEnglishFlagVisible = true;
+//SharedPreferences prefs = SharedPreferences.getInstance();
 
 class MyHomePage extends StatefulWidget {
   final int row;
   final int column;
   final String level;
   final bool IsEnglishFlagVisible;
+  final String quizletId;
 
   const MyHomePage({
     Key? key,
     required this.row,
     required this.column,
     required this.level,
-    required this.IsEnglishFlagVisible,
+    required this.IsEnglishFlagVisible, required this.quizletId,
   }) : super(key: key);
 
   @override
@@ -72,13 +74,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<Widget> progressDots = List.generate(
     25,
-    (index) => const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 2.0),
-      // Adjust the horizontal padding as needed
-      child: Icon(
-        Icons.circle,
-        size: 12.0, // Set the size as needed
-        color: Colors.white,
+    (index) => Expanded(
+      child: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 2.0),
+        // Adjust the horizontal padding as needed
+        child: Icon(
+          Icons.circle,
+          size: 12.0, // Set the size as needed
+          color: Colors.white,
+        ),
       ),
     ),
   );
@@ -141,14 +145,21 @@ class _MyHomePageState extends State<MyHomePage> {
     return [index1, index2];
   }
 
+  // Function to store string and two bool values
+  void storeData(String key, bool value1, bool value2) {
+    mySharedPreferences.setBool('$key-value1', value1);
+    mySharedPreferences.setBool('$key-value2', value2);
+  }
+
   // Function to handle quizlet completion
-  void onQuizletCompleted(String quizletId, String level, int row, int column) {
+  Future<SharedPreferences> onQuizletCompleted(
+      String quizletId, String level, int row, int column) async {
     // Store information about completed quizlet (e.g., in shared preferences)
-    // Example using shared_preferences:
-    SharedPreferences.getInstance().then((prefs) {
-      // Set a flag indicating the completion status of the quizlet
-      prefs.setBool('$level - $row - $column', true);
-    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Set a flag indicating the completion status of the quizlet
+    await prefs.setBool('$level - $row - $column', true);
+    // Return the SharedPreferences instance
+    return prefs;
   }
 
   bool containsNumber(String input) {
@@ -433,7 +444,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainString.endsWith(articleCheck2)) {
         isArticle = true;
       } else {
-        if (mainString.endsWith(verbCheck) &&
+        if ( //mainString.endsWith(verbCheck) &&
             _data[indexOfTheWordToGuess][1]
                 .toString()
                 .startsWith(verbCheckEN)) {
@@ -442,15 +453,15 @@ class _MyHomePageState extends State<MyHomePage> {
           isOther = true;
         }
       }
-      print(mainString);
-      print(isArticle);
-      print(isVerb);
-      print(isOther);
-      print("is it a dutch verb and a english verb??");
-      print(mainString.endsWith(verbCheck));
-      print(_data[indexOfTheWordToGuess][1].toString().startsWith(verbCheckEN));
-      print("index is $indexOfTheWordToGuess, word is");
-      print(_data[indexOfTheWordToGuess][1].toString());
+      //print(mainString);
+      //print(isArticle);
+      //print(isVerb);
+      //print(isOther);
+      //print("is it a dutch verb and a english verb??");
+      //print(mainString.endsWith(verbCheck));
+      //print(_data[indexOfTheWordToGuess][1].toString().startsWith(verbCheckEN));
+      //print("index is $indexOfTheWordToGuess, word is");
+      //print(_data[indexOfTheWordToGuess][1].toString());
     } else {
       if (column == 1 && !IsEnglishFlagVisible) {
         indexOfDutchWord = index;
@@ -458,8 +469,9 @@ class _MyHomePageState extends State<MyHomePage> {
           isArticle = true;
           //print("art");
         } else {
-          if (mainString.startsWith(verbCheckEN) &&
-              _data[index][0].toString().endsWith(verbCheck)) {
+          if (mainString.startsWith(verbCheckEN)
+              //&& _data[index][0].toString().endsWith(verbCheck)
+              ) {
             isVerb = true;
             //print("verb");
           } else {
@@ -595,6 +607,7 @@ class _MyHomePageState extends State<MyHomePage> {
         rightAnswers++;
       }
     }
+    //print("correct: $rightAnswers , wrong: $wrongAnswers");
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -668,27 +681,35 @@ class _MyHomePageState extends State<MyHomePage> {
                     isArticle = false;
                     isVerb = false;
                     isOther = false;
-                    if (displayedCardsCount == 25) {
+                    if (displayedCardsCount == 3) {
+                      completelyCorrect = wrongAnswers == 0;
+                      storeData(widget.quizletId,
+                          true, completelyCorrect);
+                      print(widget.quizletId);
+                      //mySharedPreferences.setBoolList('$widget.level - $widget.row - $widget.column', [true, isCorrect]);
+                      //prefs.setBool('$widget.level - $widget.row - $widget.column', true, isCorrect);
                       //print(widget.row);
                       //print(widget.column);
                       // Call onQuizletCompleted() when quizlet is completed
                       onQuizletCompleted(selectedQuizlet, widget.level,
-                          widget.row, widget.column);
-                      // Navigate to the new page with the "sucker" message
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SuckerPage(
-                            rightAnswers: rightAnswers,
-                            wrongAnswers: wrongAnswers,
-                            whatWasIdoing: "questions",
-                            level: widget.level,
-                            row: widget.row,
-                            column: widget.column,
-                            IsEnglishFlagVisible: widget.IsEnglishFlagVisible,
+                              widget.row, widget.column)
+                          .then((prefs) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SuckerPage(
+                              rightAnswers: rightAnswers,
+                              wrongAnswers: wrongAnswers,
+                              whatWasIdoing: "questions",
+                              level: widget.level,
+                              row: widget.row,
+                              column: widget.column,
+                              IsEnglishFlagVisible: widget.IsEnglishFlagVisible, // Pass the SharedPreferences instance
+                              difficulty: '',
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      });
                     }
                   });
                 },
@@ -770,10 +791,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     context); // Use maybePop to handle back navigation
               },
             ),
-            title: const Align(
+            title: Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: EdgeInsets.only(right: 36.0, top: 16.0),
+                padding: EdgeInsets.only(
+                  right: MediaQuery.of(context).size.width *
+                      0.05, // Use a percentage of the screen width
+                  top: 16.0,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -884,22 +909,27 @@ class _MyHomePageState extends State<MyHomePage> {
                 // Display the progress dots
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: progressDots,
-                    /*List.generate(
-                      numberOfcircles,
-                          (index) => Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 2.0),
-                        // Adjust the horizontal padding as needed
-                        child: Icon(
-                          Icons.circle,
-                          size: 30.0, // Set the size as needed
-                          color: Colors.white,
+                  child: Container(
+                    width: MediaQuery.of(context)
+                        .size
+                        .width, // Set width to match screen width
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: progressDots,
+                      /*List.generate(
+                        numberOfcircles,
+                            (index) => Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 2.0),
+                          // Adjust the horizontal padding as needed
+                          child: Icon(
+                            Icons.circle,
+                            size: 30.0, // Set the size as needed
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                    )
-                      */
+                      )
+                        */
+                    ),
                   ),
                 ),
                 Expanded(

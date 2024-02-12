@@ -84,6 +84,8 @@ flutter:
     - assets/words.xlsx
     - assets/eg.csv
     - assets/wordscopy.csv
+    - assets/flash utch.png
+    - assets/FLASHDUTCH.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

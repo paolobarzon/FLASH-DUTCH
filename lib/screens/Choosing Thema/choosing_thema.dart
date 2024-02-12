@@ -6,13 +6,24 @@ import '../../models/questions.dart';
 import '../../models/sucker_page.dart';
 
 String selectedQuizlet = ''; // Example of a global variable
+// Define a global variable to hold SharedPreferences data
+late SharedPreferences mySharedPreferences;
 
 class ButtonPage extends StatefulWidget {
+  final bool completelyCorrect;
+  //final String completelyCorrect;
+
+  ButtonPage({required this.completelyCorrect,
+});
+
   @override
   _ButtonPageState createState() => _ButtonPageState();
 }
 
 class _ButtonPageState extends State<ButtonPage> {
+
+  String level = '';
+  String quizletId = '';
   int globalRowCounter = 1;
   bool isFlagSwapped = true;
   List<bool> levelVisibility = [false, false, false, false, false];
@@ -27,13 +38,47 @@ class _ButtonPageState extends State<ButtonPage> {
     return isCompleted;
   }
 
-  Future<void> loadQuizletCompletionStatus(bool completelyCorrect) async {
+  // Define a function to get the color based on the values in SharedPreferences
+  Color getBoxColor(String quizletId) {
+    bool value1 = mySharedPreferences.getBool('$quizletId-value1') ?? false;
+    bool value2 = mySharedPreferences.getBool('$quizletId-value2') ?? false;
+
+    if (value1 && value2) {
+      return Colors.green; // Both values are true
+    } else if (value1 && !value2) {
+      return Colors.orange; // Value1 is true and value2 is false
+    } else {
+      return Colors.blue; // Value1 is false
+    }
+  }
+
+// Call this function after completing a quizlet in another page
+  void onQuizletCompleted(String quizletId, bool completelyCorrect) {
+    loadQuizletCompletionStatus(quizletId, completelyCorrect);
+  }
+
+  Future<void> loadQuizletCompletionStatus(String quizletId, bool completelyCorrect) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Load completion status for the specified quizlet from shared preferences
+    bool isCompleted = prefs.getBool(quizletId) ?? false;
+    quizletCompletionStatus[quizletId] = isCompleted ? (completelyCorrect ? Colors.green : Colors.orange) : Colors.blue;
+  }
+
+// Define a function to initialize the SharedPreferences variable
+  void initSharedPreferences() async {
+    mySharedPreferences = await SharedPreferences.getInstance();
+  }
+
+  /*Future<void> loadQuizletCompletionStatus(bool completelyCorrect) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // Load completion status for each quizlet from shared preferences
     for (int row = 1; row <= 15; row++) {
       for (int column = 1; column <= 4; column++) {
-        String quizletId = 'A2/B1 - $row - $column';
+        quizletId = '$level - $row - $column';
         bool isCompleted = prefs.getBool(quizletId) ?? false;
+        print(quizletId);
+        print(isCompleted);
+        print(completelyCorrect);
         setState(() {
           quizletCompletionStatus[quizletId] = isCompleted
               ? (completelyCorrect ? Colors.green : Colors.orange)
@@ -41,12 +86,17 @@ class _ButtonPageState extends State<ButtonPage> {
         });
       }
     }
-  }
+    print( "and now");
+    print(prefs);
+    print(quizletCompletionStatus);
+  }*/
 
   // When the page is initialized or navigated to
   @override
   void initState() {
     super.initState();
+    initSharedPreferences();
+    //print(mySharedPreferences);
     // Check if selected quizlet is completed
     //print("god");
     checkIfQuizletIsCompleted(selectedQuizlet).then((isCompleted) {
@@ -59,10 +109,10 @@ class _ButtonPageState extends State<ButtonPage> {
         // });
 
         // Load quizlet completion status with the parameter
-        loadQuizletCompletionStatus(completelyCorrect);
+        onQuizletCompleted(quizletId, completelyCorrect);
       }
     });
-    loadQuizletCompletionStatus(completelyCorrect);
+    onQuizletCompleted(quizletId, completelyCorrect);
   }
 
   // When user selects a quizlet
@@ -82,10 +132,20 @@ class _ButtonPageState extends State<ButtonPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80.0),
+        preferredSize: const Size.fromHeight(100.0),
         child: AppBar(
-          toolbarHeight: 80.0,
+          toolbarHeight: 100.0,
           //backgroundColor: Colors.pink,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              // Navigate to a specific page when the back button is pressed
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => WelcomeScreen()),
+              );
+            },
+          ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -97,41 +157,68 @@ class _ButtonPageState extends State<ButtonPage> {
             ],
           ),
           actions: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-              child: GestureDetector(
-                onTap: toggleFlagPosition,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (isFlagSwapped)
-                      Image.asset(
-                        'assets/dutch.png.png',
-                        height: 20,
-                        width: 30,
-                      )
-                    else
-                      Image.asset(
-                        'assets/english_flag.png',
-                        height: 20,
-                        width: 30,
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: kPrimaryGradient.colors.first, // Use kPrimaryGradient color
+                  width: 4, // Adjust the width of the border as needed
+                ),
+                borderRadius: BorderRadius.circular(10), // Set rounded corners
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 2.0, horizontal: 6.0),
+                child: GestureDetector(
+                  onTap: () {
+                    toggleFlagPosition();
+                    // Determine the message based on the value of isFlagSwapped
+                    String message = isFlagSwapped
+                        ? 'The words to guess are now in Dutch; the solutions are in English.'
+                        : 'The words to guess are now in English; the solutions are in Dutch.';
+                    // Show SnackBar when flags are tapped
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          message,
+                          style: TextStyle(
+                            fontSize: 18, // Adjust the font size as needed
+                          ),
+                        ),
+                        duration: Duration(seconds: 3), // Set duration
                       ),
-                    Icon(Icons.arrow_downward),
-                    if (isFlagSwapped)
-                      Image.asset(
-                        'assets/english_flag.png',
-                        height: 20,
-                        width: 30,
-                      )
-                    else
-                      Image.asset(
-                        'assets/dutch.png.png',
-                        height: 20,
-                        width: 30,
-                      ),
-                  ],
+                    );
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (isFlagSwapped)
+                        Image.asset(
+                          'assets/dutch.png.png',
+                          height: 25,
+                          width: 30,
+                        )
+                      else
+                        Image.asset(
+                          'assets/english_flag.png',
+                          height: 25,
+                          width: 30,
+                        ),
+                      Icon(Icons.arrow_downward),
+                      if (isFlagSwapped)
+                        Image.asset(
+                          'assets/english_flag.png',
+                          height: 25,
+                          width: 30,
+                        )
+                      else
+                        Image.asset(
+                          'assets/dutch.png.png',
+                          height: 25,
+                          width: 30,
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -248,31 +335,32 @@ class _ButtonPageState extends State<ButtonPage> {
                                         1; // Rows from 1 to 15 for the remaining items
                                   }*/
                                   int column = (index % 4) + 1;
-                                  String quizletId;
-                                  String level;
+                                  //String quizletId;
 
                                   // Determine the prefix based on the index range and the level
                                   if (i == 0 && index < 80) {
-                                    quizletId = 'A0 - $row - $column';
                                     level = "A0";
+                                    quizletId = '$level - $row - $column';
                                   } else if (i == 1 && index < 80) {
-                                    quizletId = 'A1 - $row - $column';
                                     level = "A1";
+                                    quizletId = '$level - $row - $column';
                                   } else if (i == 2) {
-                                    quizletId = 'A2 - $row - $column';
                                     level = "A2";
+                                    quizletId = '$level - $row - $column';
                                   } else if (i == 3) {
-                                    quizletId = 'A2/B1 - $row - $column';
                                     level = "A2/B1";
+                                    quizletId = '$level - $row - $column';
                                   } else {
-                                    quizletId = 'B1 - $row - $column';
                                     level = "B1";
+                                    quizletId = '$level - $row - $column';
                                   }
 
                                   checkIfQuizletIsCompleted(quizletId);
                                   loadQuizletCompletionStatus;
                                   return InkWell(
                                     onTap: () {
+                                      quizletId = '$level - $row - $column';
+                                      print(quizletId);
                                       //print(isFlagSwapped);
                                       //print("$row $column");
                                       onSelectQuizlet(quizletId);
@@ -284,6 +372,7 @@ class _ButtonPageState extends State<ButtonPage> {
                                             level: level,
                                             row: row,
                                             column: column,
+                                            quizletId : quizletId,
                                           ),
                                         ),
                                       );
@@ -324,9 +413,7 @@ class _ButtonPageState extends State<ButtonPage> {
                                               alignment: Alignment.center,
                                               margin: EdgeInsets.all(6),
                                               decoration: BoxDecoration(
-                                                color: quizletCompletionStatus[
-                                                        quizletId] ??
-                                                    Colors.blue,
+                                                color: getBoxColor(quizletId),
                                                 // Use completion status to determine color
                                                 borderRadius:
                                                     BorderRadius.circular(12),
