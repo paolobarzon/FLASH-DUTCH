@@ -133,10 +133,11 @@ class _MyVerbsState extends State<MyVerbs> {
         randomRowIndex = Random().nextInt(_data.length);
       } while (_data[randomRowIndex].length != 5);
     } else if (widget.difficulty == "hard") {
-      int randomRowIndex;
+      //int randomRowIndex;
       do {
         randomRowIndex = Random().nextInt(_data.length);
-      } while (_data[randomRowIndex].length >= 4);
+        print(_data[randomRowIndex].length);
+      } while (_data[randomRowIndex].length == 5);
     }
 
 
