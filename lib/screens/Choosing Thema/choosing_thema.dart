@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants.dart';
 import '../../models/questions.dart';
 import '../../models/sucker_page.dart';
+import 'package:simple_app_simple/settings_page.dart';
 
 String selectedQuizlet = ''; // Example of a global variable
 // Define a global variable to hold SharedPreferences data
@@ -37,6 +38,11 @@ class _ButtonPageState extends State<ButtonPage> {
     bool? isCompleted = prefs.getBool(quizletId) ?? false;
     return isCompleted;
   }
+
+  Color getDarkerShade(Color color) {
+    return HSLColor.fromColor(color).withLightness(0.6 * HSLColor.fromColor(color).lightness).toColor();
+  }
+
 
   // Define a function to get the color based on the values in SharedPreferences
   Color getBoxColor(String quizletId) {
@@ -158,13 +164,13 @@ class _ButtonPageState extends State<ButtonPage> {
           ),
           actions: [
             Container(
-              decoration: BoxDecoration(
+              /*decoration: BoxDecoration(
                 border: Border.all(
                   color: kPrimaryGradient.colors.first, // Use kPrimaryGradient color
                   width: 4, // Adjust the width of the border as needed
                 ),
                 borderRadius: BorderRadius.circular(10), // Set rounded corners
-              ),
+              ),*/
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 2.0, horizontal: 6.0),
@@ -192,31 +198,32 @@ class _ButtonPageState extends State<ButtonPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      if (isFlagSwapped)
-                        Image.asset(
-                          'assets/dutch.png.png',
-                          height: 25,
-                          width: 30,
-                        )
-                      else
-                        Image.asset(
-                          'assets/english_flag.png',
-                          height: 25,
-                          width: 30,
+                      Padding(
+                        padding: EdgeInsets.only(right: 16.0), // Adjust the spacing as needed
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.settings,
+                            size: 32.0, // Adjust the size as needed
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SettingsPage(),
+                                settings: RouteSettings(
+                                  arguments: isFlagSwapped,
+                                ),
+                              ),
+                            ).then((result) {
+                              if (result != null) {
+                                setState(() {
+                                  isFlagSwapped = result;
+                                });
+                              }
+                            });
+                          },
                         ),
-                      Icon(Icons.arrow_downward),
-                      if (isFlagSwapped)
-                        Image.asset(
-                          'assets/english_flag.png',
-                          height: 25,
-                          width: 30,
-                        )
-                      else
-                        Image.asset(
-                          'assets/dutch.png.png',
-                          height: 25,
-                          width: 30,
-                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -386,55 +393,36 @@ class _ButtonPageState extends State<ButtonPage> {
                                           decoration: BoxDecoration(
                                             gradient: LinearGradient(
                                               colors: [
-                                                Colors.blue,
-                                                Colors.lightBlueAccent
+                                                getBoxColor(quizletId),
+                                                getDarkerShade(getBoxColor(quizletId)), // Use getDarkerShade method here
                                               ],
                                               begin: Alignment.topLeft,
                                               end: Alignment.bottomRight,
                                               stops: [0.0, 1.0],
                                             ),
-                                            borderRadius:
-                                                BorderRadius.circular(12),
+                                            borderRadius: BorderRadius.circular(12),
                                           ),
-                                          child: DecoratedBox(
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            margin: EdgeInsets.all(6),
                                             decoration: BoxDecoration(
-                                              gradient: LinearGradient(
-                                                colors: [
-                                                  Colors.blue.shade900,
-                                                  Colors.blue.shade700
-                                                ],
-                                                begin: Alignment.topLeft,
-                                                end: Alignment.bottomRight,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
+                                              color: getBoxColor(quizletId), // Use completion status to determine color
+                                              borderRadius: BorderRadius.circular(12),
                                             ),
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              margin: EdgeInsets.all(6),
-                                              decoration: BoxDecoration(
-                                                color: getBoxColor(quizletId),
-                                                // Use completion status to determine color
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
+                                            child: Text(
+                                              '$level:\n$row - $column',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold, // Make the text bold
+                                                fontSize: 23, // Set the font size
                                               ),
-                                              child: Text(
-                                                '$level:\n$row - $column',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  // Make the text bold
-                                                  fontSize:
-                                                      23, // Set the font size
-                                                ),
-                                                textAlign: TextAlign
-                                                    .center, // Center the text
-                                              ),
+                                              textAlign: TextAlign.center, // Center the text
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
+
                                   );
                                 },
                               ),

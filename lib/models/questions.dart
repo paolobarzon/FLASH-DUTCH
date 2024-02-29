@@ -72,6 +72,11 @@ class _MyHomePageState extends State<MyHomePage> {
   int indexOfTheWordToGuess = 0;
   int numberOfcircles = 25;
 
+  List<int> shuffledIndices = [];
+  int currentIndex = 0; // To keep track of the current position in the shuffled list
+  bool hasAnsweredCorrectly = false;
+
+
   List<Widget> progressDots = List.generate(
     25,
     (index) => Expanded(
@@ -137,6 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
         //print("data i above, i below");
         //print(i);
         index2 = i;
+        break;
         //return i;
       }
     }
@@ -410,29 +416,40 @@ class _MyHomePageState extends State<MyHomePage> {
     //print("first try at getting the word: $mainString");
     //int newIndex = searchInCSV(thema, section) + 1;
 
-    if (isThisTheFirstWordEverOfTheQuizlet) {
-      //newIndex++;
-      List<int> indices = searchInCSV(level, thema, section);
 
-      // Access the returned indices
-      index = indices[0] + 1;
+// Assuming this part is executed when you initially set up the quizlet:
+    if (isThisTheFirstWordEverOfTheQuizlet) {
+      List<int> indices = searchInCSV(level, thema, section);
+      print(indices);
+      int indexStart = indices[0] + 1;
       int indexEnd = indices[1];
-      numberOfcircles = indexEnd - index;
-      //print("number of circles is $numberOfcircles");
-      //index, indexEnd = searchInCSV(thema, section) + 1;
-      mainString = _data[index][column].toString();
+      numberOfcircles = indexEnd - indexStart + 1;
+      print("number of circles is $numberOfcircles");
+
+      // Initialize the list of indices and shuffle it
+      shuffledIndices = List.generate(indexEnd - indexStart + 1, (i) => indexStart + i);
+      shuffledIndices.shuffle();
+      print("Shuffled indices: $shuffledIndices");
+
+      // Set the first word based on the shuffled list
+      mainString = _data[shuffledIndices[currentIndex]][column].toString();
       isThisTheFirstWordEverOfTheQuizlet = false;
-      indexOfTheWordToGuess = index;
-      //print(
-      //    "the very first index of the thema section is $index, which is the same of $indexOfTheWordToGuess");
+      indexOfTheWordToGuess = shuffledIndices[currentIndex];
     } else {
       if ((column == 0 && IsEnglishFlagVisible) ||
           (column == 1 && !IsEnglishFlagVisible)) {
-        indexOfTheWordToGuess++; //sequentially show the words from the thema/section
+        if (++currentIndex < shuffledIndices.length) {
+          indexOfTheWordToGuess = shuffledIndices[currentIndex];
+          mainString = _data[indexOfTheWordToGuess][column].toString();
+        } else {
+          // All words have been displayed, handle this case as needed
+          print("All words have been displayed.");
+        }
+        //indexOfTheWordToGuess++; //sequentially show the words from the thema/section
         //print("first word of the quizlet $indexOfTheWordToGuess");
         //print(
         //    "now this: $indexOfTheWordToGuess should be going up consequentially");
-        mainString = _data[indexOfTheWordToGuess][column].toString();
+        //mainString = _data[indexOfTheWordToGuess][column].toString();
       } else {
         if (indexOfDutchWord == index) {
           mainString = _data[indexOfDutchWord][column].toString();
@@ -623,7 +640,11 @@ class _MyHomePageState extends State<MyHomePage> {
         didIgetItWrongFirst = true;
         isThisTheFirstTry = false;
       } else {
-        rightAnswers++;
+        // Only increment rightAnswers if hasAnsweredCorrectly is false
+        if (!hasAnsweredCorrectly) {
+          rightAnswers++;
+          hasAnsweredCorrectly = true; // Prevents incrementing rightAnswers again for the same card
+        }
       }
     }
     //print("correct: $rightAnswers , wrong: $wrongAnswers");
@@ -649,100 +670,66 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-            /*SizedBox(height: 8.0),
-          Row(
-            children: [
-              Icon(
-                Icons.check,
-                color: Colors.black, // Set the color to black
-              ),
-              SizedBox(width: 8.0),
-              Text(
-                '$rightAnswers',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(width: 16.0), // Adjust spacing
-              Icon(
-                Icons.close,
-                color: Colors.black, // Set the color to black
-              ),
-              SizedBox(width: 8.0),
-              Text(
-                '$wrongAnswers',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),*/
+            // Your existing SnackBar content...
           ],
         ),
         duration: const Duration(seconds: 300),
         backgroundColor: snackBarColor,
         action: isCorrect
             ? SnackBarAction(
-                label: 'Next',
-                onPressed: () {
-                  setState(() {
-                    isThisTheFirstTry = true;
-                    displayedCardsCount++;
-                    if (didIgetItWrongFirst) {
-                      updateProgress(!isCorrect);
-                    } else {
-                      updateProgress(isCorrect);
-                    }
-                    didIgetItWrongFirst = false;
-                    isCorrect = false;
-                    isArticle = false;
-                    isVerb = false;
-                    isOther = false;
-                    if (displayedCardsCount == 25) {
-                      completelyCorrect = wrongAnswers == 0;
-                      storeData(widget.quizletId,
-                          true, completelyCorrect);
-                      print(widget.quizletId);
-                      //mySharedPreferences.setBoolList('$widget.level - $widget.row - $widget.column', [true, isCorrect]);
-                      //prefs.setBool('$widget.level - $widget.row - $widget.column', true, isCorrect);
-                      //print(widget.row);
-                      //print(widget.column);
-                      // Call onQuizletCompleted() when quizlet is completed
-                      onQuizletCompleted(selectedQuizlet, widget.level,
-                              widget.row, widget.column)
-                          .then((prefs) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SuckerPage(
-                              rightAnswers: rightAnswers,
-                              wrongAnswers: wrongAnswers,
-                              whatWasIdoing: "questions",
-                              level: widget.level,
-                              row: widget.row,
-                              column: widget.column,
-                              IsEnglishFlagVisible: widget.IsEnglishFlagVisible, // Pass the SharedPreferences instance
-                              difficulty: '',
-                            ),
-                          ),
-                        );
-                      });
-                    }
-                  });
-                },
-              )
+          label: 'Next',
+          onPressed: () {
+            setState(() {
+              // Reset hasAnsweredCorrectly when moving to the next card
+              hasAnsweredCorrectly = false;
+              isThisTheFirstTry = true;
+              displayedCardsCount++;
+              if (didIgetItWrongFirst) {
+                updateProgress(!isCorrect);
+              } else {
+                updateProgress(isCorrect);
+              }
+              didIgetItWrongFirst = false;
+              isCorrect = false;
+              isArticle = false;
+              isVerb = false;
+              isOther = false;
+              if (displayedCardsCount == 3) {
+                completelyCorrect = wrongAnswers == 0;
+                storeData(widget.quizletId, true, completelyCorrect);
+                // Call onQuizletCompleted() when quizlet is completed
+                onQuizletCompleted(selectedQuizlet, widget.level, widget.row, widget.column).then((prefs) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SuckerPage(
+                        rightAnswers: rightAnswers,
+                        wrongAnswers: wrongAnswers,
+                        whatWasIdoing: "questions",
+                        level: widget.level,
+                        row: widget.row,
+                        column: widget.column,
+                        IsEnglishFlagVisible: widget.IsEnglishFlagVisible, // Pass the SharedPreferences instance
+                        difficulty: '',
+                      ),
+                    ),
+                  );
+                });
+              }
+            });
+          },
+        )
             : SnackBarAction(
-                label: 'Dismiss',
-                onPressed: () {
-                  ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                },
-              ),
+          label: 'Dismiss',
+          onPressed: () {
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+          },
+        ),
       ),
     );
     // Check if the user has answered 10 quizzes
   }
+
 
   void changeColor(String color) {
     if (color == "green") {
