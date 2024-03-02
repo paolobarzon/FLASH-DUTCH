@@ -75,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<int> shuffledIndices = [];
   int currentIndex = 0; // To keep track of the current position in the shuffled list
   bool hasAnsweredCorrectly = false;
+  int isCorrectNUM = 2;
 
 
   List<Widget> progressDots = List.generate(
@@ -91,6 +92,29 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     ),
   );
+
+  Widget progressBar(double progress) {
+    // This function returns a widget that represents the progress bar
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      child: Container(
+        height: 20.0, // Height of the progress bar
+        width: double.infinity, // Make the progress bar take the full width
+        decoration: BoxDecoration(
+          color: Colors.grey[300], // Background color of the progress bar
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: LinearProgressIndicator(
+          borderRadius: BorderRadius.circular(8), // Rounded corners of the progress indicator
+          value: progress, // Current progress, between 0.0 and 1.0
+          backgroundColor: Colors.grey[300], // Background color of the progress bar
+          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF46A0AE)),
+          // Color of the filled part of the progress bar
+        ),
+      ),
+    );
+  }
+
 
   List<int> searchInCSV(String level, int thema, int section) {
     int index1 = 0;
@@ -396,12 +420,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 
-  Widget buildCard(bool IsEnglishFlagVisible, String level, int thema,
+  Widget buildCard(bool IsEnglishFlagVisible, int isCorrectNUM, String level, int thema,
       int section, int index, bool isCorrect, int column, Function() onTap) {
-    //print("We enter with index $index");
-    //print("function buildcard");
-    //print("english flag?");
-    //print(IsEnglishFlagVisible);
     double screenWidth = MediaQuery.of(context).size.width;
     double cardWidth = (column == 1) ? screenWidth / 2 - 20 : screenWidth - 20;
     if (!IsEnglishFlagVisible) {
@@ -415,14 +435,14 @@ class _MyHomePageState extends State<MyHomePage> {
     String mainString = _data[index][column].toString();
     //print("first try at getting the word: $mainString");
     //int newIndex = searchInCSV(thema, section) + 1;
-
+    Color backgroundColor = Colors.transparent;
 
 // Assuming this part is executed when you initially set up the quizlet:
     if (isThisTheFirstWordEverOfTheQuizlet) {
       List<int> indices = searchInCSV(level, thema, section);
       print(indices);
       int indexStart = indices[0] + 1;
-      int indexEnd = indices[1];
+      int indexEnd = indices[1]-1;
       numberOfcircles = indexEnd - indexStart + 1;
       print("number of circles is $numberOfcircles");
 
@@ -694,7 +714,7 @@ class _MyHomePageState extends State<MyHomePage> {
               isArticle = false;
               isVerb = false;
               isOther = false;
-              if (displayedCardsCount == 3) {
+              if (displayedCardsCount == numberOfcircles) {
                 completelyCorrect = wrongAnswers == 0;
                 storeData(widget.quizletId, true, completelyCorrect);
                 // Call onQuizletCompleted() when quizlet is completed
@@ -815,28 +835,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(width: 50),
-                    /*GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          IsEnglishFlagVisible = !IsEnglishFlagVisible;
-                          isVerb = false;
-                          isArticle = false;
-                          isOther = false;
-                        });
-                      },
-                      child: IsEnglishFlagVisible
-                          ? Image.asset(
-                              'assets/english_flag.png',
-                              height: 30,
-                              width: 30,
-                            )
-                          : Image.asset(
-                              'assets/dutch.png.png',
-                              // Replace with the path to your Dutch flag image
-                              height: 30,
-                              width: 30,
-                            ),
-                    ),*/
                   ],
                 ),
               ),
@@ -850,94 +848,9 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Scaffold(
             body: Column(
               children: [
-                /*Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          isA0A1Selected = !isA0A1Selected; // Toggle the state
-                          if (!isA0A1Selected &&
-                              !isA2Selected &&
-                              !isA2B1Selected) {
-                            // Ensure at least one button is turned on
-                            isA0A1Selected = true;
-                          }
-                          //isA2Selected = false;
-                          //isA2B1Selected = false;
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: isA0A1Selected ? Colors.pink : Colors.black,
-                      ),
-                      child: Text("A0/A1"),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          //isA0A1Selected = false;
-                          isA2Selected = !isA2Selected; // Toggle the state
-                          if (!isA0A1Selected &&
-                              !isA2Selected &&
-                              !isA2B1Selected) {
-                            // Ensure at least one button is turned on
-                            isA2Selected = true;
-                          }
-                          //isA2B1Selected = false;
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: isA2Selected ? Colors.pink : Colors.black,
-                      ),
-                      child: Text("A2"),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          //isA0A1Selected = false;
-                          //isA2Selected = false;
-                          isA2B1Selected = !isA2B1Selected; // Toggle the state
-                          if (!isA0A1Selected &&
-                              !isA2Selected &&
-                              !isA2B1Selected) {
-                            // Ensure at least one button is turned on
-                            isA2B1Selected = true;
-                          }
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: isA2B1Selected ? Colors.pink : Colors.black,
-                      ),
-                      child: Text("A2/B1"),
-                    ),
-                  ],
-                ),*/
-                // Display the counter
-                // Display the progress dots
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: Container(
-                    width: MediaQuery.of(context)
-                        .size
-                        .width, // Set width to match screen width
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: progressDots,
-                      /*List.generate(
-                        numberOfcircles,
-                            (index) => Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 2.0),
-                          // Adjust the horizontal padding as needed
-                          child: Icon(
-                            Icons.circle,
-                            size: 30.0, // Set the size as needed
-                            color: Colors.white,
-                          ),
-                        ),
-                      )
-                        */
-                    ),
-                  ),
+                  child: progressBar(displayedCardsCount/numberOfcircles), // Use the progressBar widget here with a mock progress value
                 ),
                 Expanded(
                   child: ListView.builder(
@@ -1009,7 +922,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           return Column(
                             children: [
                               buildCard(
-                                  IsEnglishFlagVisible,
+                                  IsEnglishFlagVisible, isCorrectNUM = 2,
                                   level,
                                   row2,
                                   column2,
@@ -1025,7 +938,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            IsEnglishFlagVisible,
+                                            IsEnglishFlagVisible, isCorrectNUM = 1,
                                             level,
                                             row2,
                                             column2,
@@ -1036,7 +949,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            IsEnglishFlagVisible,
+                                            IsEnglishFlagVisible, isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1053,7 +966,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            IsEnglishFlagVisible,
+                                            IsEnglishFlagVisible, isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1064,7 +977,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            IsEnglishFlagVisible,
+                                            IsEnglishFlagVisible, isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1087,7 +1000,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           return Column(
                             children: [
                               buildCard(
-                                  IsEnglishFlagVisible,
+                                  IsEnglishFlagVisible, isCorrectNUM = 2,
                                   level,
                                   row2,
                                   column2,
@@ -1103,7 +1016,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            IsEnglishFlagVisible,
+                                            IsEnglishFlagVisible, isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1114,7 +1027,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            IsEnglishFlagVisible,
+                                            IsEnglishFlagVisible, isCorrectNUM = 1,
                                             level,
                                             row2,
                                             column2,
@@ -1131,7 +1044,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            IsEnglishFlagVisible,
+                                            IsEnglishFlagVisible, isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1142,7 +1055,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            IsEnglishFlagVisible,
+                                            IsEnglishFlagVisible, isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1165,7 +1078,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           return Column(
                             children: [
                               buildCard(
-                                  IsEnglishFlagVisible,
+                                  IsEnglishFlagVisible, isCorrectNUM = 2,
                                   level,
                                   row2,
                                   column2,
@@ -1181,7 +1094,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            IsEnglishFlagVisible,
+                                            IsEnglishFlagVisible, isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1192,7 +1105,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            IsEnglishFlagVisible,
+                                            IsEnglishFlagVisible, isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1209,7 +1122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            IsEnglishFlagVisible,
+                                            IsEnglishFlagVisible, isCorrectNUM = 1,
                                             level,
                                             row2,
                                             column2,
@@ -1220,7 +1133,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            IsEnglishFlagVisible,
+                                            IsEnglishFlagVisible, isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1243,7 +1156,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           return Column(
                             children: [
                               buildCard(
-                                  IsEnglishFlagVisible,
+                                  IsEnglishFlagVisible, isCorrectNUM = 2,
                                   level,
                                   row2,
                                   column2,
@@ -1259,7 +1172,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            IsEnglishFlagVisible,
+                                            IsEnglishFlagVisible, isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1270,7 +1183,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            IsEnglishFlagVisible,
+                                            IsEnglishFlagVisible, isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1287,7 +1200,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            IsEnglishFlagVisible,
+                                            IsEnglishFlagVisible, isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1298,7 +1211,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            IsEnglishFlagVisible,
+                                            IsEnglishFlagVisible, isCorrectNUM = 1,
                                             level,
                                             row2,
                                             column2,
