@@ -1,14 +1,15 @@
-//import 'package:audioplayers/audioplayers.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
-//import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 import 'package:csv/csv.dart';
 import 'dart:math';
+
 //import 'package:country_icons/country_icons.dart';
 ///import 'package:simple_app_simple/main.dart';
 import 'package:simple_app_simple/models/sucker_page.dart';
 import 'dart:async';
+
 //import 'dart:convert';
 //import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
@@ -31,7 +32,8 @@ class MyHomePage extends StatefulWidget {
     required this.row,
     required this.column,
     required this.level,
-    required this.isEnglishFlagVisible, required this.quizletId,
+    required this.isEnglishFlagVisible,
+    required this.quizletId,
   });
 
   @override
@@ -76,12 +78,14 @@ class _MyHomePageState extends State<MyHomePage> {
   int numberOfcircles = 25;
 
   List<int> shuffledIndices = [];
-  int currentIndex = 0; // To keep track of the current position in the shuffled list
+  int currentIndex =
+      0; // To keep track of the current position in the shuffled list
   bool hasAnsweredCorrectly = false;
   int isCorrectNUM = 2;
   bool isVisible = false;
-  //final player = AudioPlayer();
+  late OverlayEntry overlayEntry; // Define it at class level
 
+  //final player = AudioPlayer();
 
   List<Widget> progressDots = List.generate(
     25,
@@ -122,16 +126,18 @@ class _MyHomePageState extends State<MyHomePage> {
           borderRadius: BorderRadius.circular(20),
         ),
         child: LinearProgressIndicator(
-          borderRadius: BorderRadius.circular(8), // Rounded corners of the progress indicator
-          value: progress, // Current progress, between 0.0 and 1.0
-          backgroundColor: Colors.grey[300], // Background color of the progress bar
+          borderRadius: BorderRadius.circular(8),
+          // Rounded corners of the progress indicator
+          value: progress,
+          // Current progress, between 0.0 and 1.0
+          backgroundColor: Colors.grey[300],
+          // Background color of the progress bar
           valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF46A0AE)),
           // Color of the filled part of the progress bar
         ),
       ),
     );
   }
-
 
   List<int> searchInCSV(String level, int thema, int section) {
     int index1 = 0;
@@ -176,7 +182,12 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     }
     for (int i = index1 + 1; i < _data.length; i++) {
-      if (_data[i][0] == level || _data[i][0] == "A1" || _data[i][0] == "A2" || _data[i][0] == "A2/B1" || _data[i][0] == "B1" || _data[i][0] == "B1/B2") {
+      if (_data[i][0] == level ||
+          _data[i][0] == "A1" ||
+          _data[i][0] == "A2" ||
+          _data[i][0] == "A2/B1" ||
+          _data[i][0] == "B1" ||
+          _data[i][0] == "B1/B2") {
         index2 = i; // Set index2 to 1 if any of the conditions match
         break;
       }
@@ -188,7 +199,6 @@ class _MyHomePageState extends State<MyHomePage> {
       // Handle the case where there is no match
       // You can set index2 to a different value or handle it according to your application's logic
     }
-
 
     // Return -1 if the value is not found
     //print("$index1 $index2");
@@ -261,7 +271,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     ////print(_data);
   }
-
 
   String modifyDisplayedTextForThe(String text) {
     if (text.endsWith(" the")) {
@@ -443,11 +452,28 @@ class _MyHomePageState extends State<MyHomePage> {
   String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 
   void playLocalAsset() {
-    //AudioPlayer().play(AssetSource('Positivesound.wav'));
+    AudioPlayer().play(AssetSource('correct.mp3'));
   }
 
-  Widget buildCard(bool isEnglishFlagVisible, int isCorrectNUM, String level, int thema,
-      int section, int index, bool isCorrect, int column, Function() onTap) {
+  void playLocalAssetWrong() {
+    print("hey");
+    AudioPlayer().play(AssetSource('wrong.mp3'));
+  }
+
+  void playLocalAssetEndLevel() {
+    AudioPlayer().play(AssetSource('end level.wav'));
+  }
+
+  Widget buildCard(
+      bool isEnglishFlagVisible,
+      int isCorrectNUM,
+      String level,
+      int thema,
+      int section,
+      int index,
+      bool isCorrect,
+      int column,
+      Function() onTap) {
     ////print( "hey");
     ////print('$level, $thema, $section $column, index is $index');
     double screenWidth = MediaQuery.of(context).size.width;
@@ -470,12 +496,13 @@ class _MyHomePageState extends State<MyHomePage> {
       List<int> indices = searchInCSV(level, thema, section);
       //print(indices);
       int indexStart = indices[0] + 1;
-      int indexEnd = indices[1]-1;
+      int indexEnd = indices[1] - 1;
       numberOfcircles = indexEnd - indexStart + 1;
       //print("number of circles is $numberOfcircles");
 
       // Initialize the list of indices and shuffle it
-      shuffledIndices = List.generate(indexEnd - indexStart + 1, (i) => indexStart + i);
+      shuffledIndices =
+          List.generate(indexEnd - indexStart + 1, (i) => indexStart + i);
       shuffledIndices.shuffle();
       //print("Shuffled indices: $shuffledIndices");
 
@@ -674,11 +701,130 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  OverlayEntry _createOverlayEntry(isCorrect) {
+    overlayEntry = OverlayEntry( // Use the class-level variable
+      builder: (context) => Stack(
+          children: [
+            Positioned(
+              left: 0,
+              top: MediaQuery.of(context).size.height * 4 / 5 - 25, // 3/4 down
+              right: 0,
+              child:  GestureDetector(
+                onTap: () {
+                  print("Overlay button tapped!");
+                  if (isCorrect) {
+                    overlayEntry.remove();
+                    setState(() {
+                      // Reset hasAnsweredCorrectly when moving to the next card
+                      hasAnsweredCorrectly = false;
+                      isThisTheFirstTry = true;
+                      displayedCardsCount++;
+                      if (didIgetItWrongFirst) {
+                        updateProgress(!isCorrect);
+                      } else {
+                        updateProgress(isCorrect);
+                      }
+                      didIgetItWrongFirst = false;
+                      isCorrect = false;
+                      isArticle = false;
+                      isVerb = false;
+                      isOther = false;
+                      if (displayedCardsCount == numberOfcircles) {
+                        completelyCorrect = wrongAnswers == 0;
+                        storeData(widget.quizletId, true, completelyCorrect);
+                        // Call onQuizletCompleted() when quizlet is completed
+                        onQuizletCompleted(selectedQuizlet, widget.level, widget.row,
+                            widget.column)
+                            .then((prefs) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SuckerPage(
+                                rightAnswers: rightAnswers,
+                                wrongAnswers: wrongAnswers,
+                                whatWasIdoing: "questions",
+                                level: widget.level,
+                                row: widget.row,
+                                column: widget.column,
+                                isEnglishFlagVisible: widget.isEnglishFlagVisible,
+                                // Pass the SharedPreferences instance
+                                difficulty: '',
+                              ),
+                            ),
+                          );
+                        });
+                      }
+                    });
+                  }
+                  else{
+                    overlayEntry.remove();
+
+                  }
+                  // Perform your action here
+                },
+                child: Container(
+                  /*width: 250, // Button width
+                  height: 150, // Button height*/
+                  decoration: BoxDecoration(
+                    color: isCorrect ? Colors.green : Colors.red,
+                    // Button color
+                    borderRadius: BorderRadius.circular(10), // Rounded corners
+                  ),
+                  child: IntrinsicWidth(
+                    // Use IntrinsicWidth to size the container to its child's width
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 10.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        // Minimize the row's width to fit its children
+                        children: [
+                          Icon(
+                            isCorrect ? Icons.check : Icons.close,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(width: 8.0),
+                          Text(
+                            isCorrect ? "Correct!" : "Wrong!",
+                            style: const TextStyle(
+                              fontSize: 28.0,
+                              fontFamily: 'Roboto',
+                              // Set the font family for this Text widget to Roboto
+                              color: Colors.black,
+                              decoration: TextDecoration
+                                  .none, // Ensure no underline is applied
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+    );
+    return overlayEntry;
+  }
+
+  void showOverlay(BuildContext context, bool isCorrect) {
+    OverlayEntry localoverlayEntry = _createOverlayEntry(isCorrect);
+    Overlay.of(context).insert(localoverlayEntry);
+
+    // Optionally, to automatically remove the overlay after some time:
+    Future.delayed(Duration(seconds: 5), () {
+      localoverlayEntry.remove();
+    });
+  }
+
   void showMessage(bool isCorrect) {
     isVisible = true;
-    showToast("hi");
+    //_createOverlayEntry(isCorrect);
+    showOverlay(context, isCorrect);
+    //showToast("hi");
     //String message = isCorrect ? "Correct!" : "Wrong!";
-    Color snackBarColor = isCorrect ? Colors.green : Colors.red;
+    /*Color snackBarColor = isCorrect ? Colors.green : Colors.red;
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
     double labelFontSize = 28.0; // Increased font size
     FontWeight labelFontWeight = FontWeight.bold;
@@ -693,7 +839,8 @@ class _MyHomePageState extends State<MyHomePage> {
         // Only increment rightAnswers if hasAnsweredCorrectly is false
         if (!hasAnsweredCorrectly) {
           rightAnswers++;
-          hasAnsweredCorrectly = true; // Prevents incrementing rightAnswers again for the same card
+          hasAnsweredCorrectly =
+              true; // Prevents incrementing rightAnswers again for the same card
         }
       }
     }
@@ -727,59 +874,61 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: snackBarColor,
         action: isCorrect
             ? SnackBarAction(
-          label: 'Next',
-          onPressed: () {
-            setState(() {
-              // Reset hasAnsweredCorrectly when moving to the next card
-              hasAnsweredCorrectly = false;
-              isThisTheFirstTry = true;
-              displayedCardsCount++;
-              if (didIgetItWrongFirst) {
-                updateProgress(!isCorrect);
-              } else {
-                updateProgress(isCorrect);
-              }
-              didIgetItWrongFirst = false;
-              isCorrect = false;
-              isArticle = false;
-              isVerb = false;
-              isOther = false;
-              if (displayedCardsCount == numberOfcircles) {
-                completelyCorrect = wrongAnswers == 0;
-                storeData(widget.quizletId, true, completelyCorrect);
-                // Call onQuizletCompleted() when quizlet is completed
-                onQuizletCompleted(selectedQuizlet, widget.level, widget.row, widget.column).then((prefs) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SuckerPage(
-                        rightAnswers: rightAnswers,
-                        wrongAnswers: wrongAnswers,
-                        whatWasIdoing: "questions",
-                        level: widget.level,
-                        row: widget.row,
-                        column: widget.column,
-                        isEnglishFlagVisible: widget.isEnglishFlagVisible, // Pass the SharedPreferences instance
-                        difficulty: '',
-                      ),
-                    ),
-                  );
-                });
-              }
-            });
-          },
-        )
+                label: 'Next',
+                onPressed: () {
+                  setState(() {
+                    // Reset hasAnsweredCorrectly when moving to the next card
+                    hasAnsweredCorrectly = false;
+                    isThisTheFirstTry = true;
+                    displayedCardsCount++;
+                    if (didIgetItWrongFirst) {
+                      updateProgress(!isCorrect);
+                    } else {
+                      updateProgress(isCorrect);
+                    }
+                    didIgetItWrongFirst = false;
+                    isCorrect = false;
+                    isArticle = false;
+                    isVerb = false;
+                    isOther = false;
+                    if (displayedCardsCount == numberOfcircles) {
+                      completelyCorrect = wrongAnswers == 0;
+                      storeData(widget.quizletId, true, completelyCorrect);
+                      // Call onQuizletCompleted() when quizlet is completed
+                      onQuizletCompleted(selectedQuizlet, widget.level,
+                              widget.row, widget.column)
+                          .then((prefs) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SuckerPage(
+                              rightAnswers: rightAnswers,
+                              wrongAnswers: wrongAnswers,
+                              whatWasIdoing: "questions",
+                              level: widget.level,
+                              row: widget.row,
+                              column: widget.column,
+                              isEnglishFlagVisible: widget.isEnglishFlagVisible,
+                              // Pass the SharedPreferences instance
+                              difficulty: '',
+                            ),
+                          ),
+                        );
+                      });
+                    }
+                  });
+                },
+              )
             : SnackBarAction(
-          label: 'Dismiss',
-          onPressed: () {
-            ScaffoldMessenger.of(context).removeCurrentSnackBar();
-          },
-        ),
+                label: 'Dismiss',
+                onPressed: () {
+                  ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                },
+              ),
       ),
-    );
+    );*/
     // Check if the user has answered 10 quizzes
   }
-
 
   void changeColor(String color) {
     if (color == "green") {
@@ -880,7 +1029,8 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: progressBar(displayedCardsCount/numberOfcircles), // Use the progressBar widget here with a mock progress value
+                  child: progressBar(displayedCardsCount /
+                      numberOfcircles), // Use the progressBar widget here with a mock progress value
                 ),
                 Expanded(
                   child: ListView.builder(
@@ -952,7 +1102,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           return Column(
                             children: [
                               buildCard(
-                                  isEnglishFlagVisible, isCorrectNUM = 2,
+                                  isEnglishFlagVisible,
+                                  isCorrectNUM = 2,
                                   level,
                                   row2,
                                   column2,
@@ -968,7 +1119,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            isEnglishFlagVisible, isCorrectNUM = 1,
+                                            isEnglishFlagVisible,
+                                            isCorrectNUM = 1,
                                             level,
                                             row2,
                                             column2,
@@ -980,7 +1132,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            isEnglishFlagVisible, isCorrectNUM = 0,
+                                            isEnglishFlagVisible,
+                                            isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -988,6 +1141,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             false,
                                             1, () {
                                           isCorrect = false;
+                                          playLocalAssetWrong();
                                           showMessage(isCorrect);
                                         }),
                                       ],
@@ -997,7 +1151,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            isEnglishFlagVisible, isCorrectNUM = 0,
+                                            isEnglishFlagVisible,
+                                            isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1008,7 +1163,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            isEnglishFlagVisible, isCorrectNUM = 0,
+                                            isEnglishFlagVisible,
+                                            isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1016,6 +1172,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             false,
                                             1, () {
                                           isCorrect = false;
+                                          playLocalAssetWrong();
                                           showMessage(isCorrect);
                                         }),
                                       ],
@@ -1031,7 +1188,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           return Column(
                             children: [
                               buildCard(
-                                  isEnglishFlagVisible, isCorrectNUM = 2,
+                                  isEnglishFlagVisible,
+                                  isCorrectNUM = 2,
                                   level,
                                   row2,
                                   column2,
@@ -1047,7 +1205,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            isEnglishFlagVisible, isCorrectNUM = 0,
+                                            isEnglishFlagVisible,
+                                            isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1055,10 +1214,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                             false,
                                             1, () {
                                           isCorrect = false;
+                                          playLocalAssetWrong();
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            isEnglishFlagVisible, isCorrectNUM = 1,
+                                            isEnglishFlagVisible,
+                                            isCorrectNUM = 1,
                                             level,
                                             row2,
                                             column2,
@@ -1076,7 +1237,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            isEnglishFlagVisible, isCorrectNUM = 0,
+                                            isEnglishFlagVisible,
+                                            isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1084,10 +1246,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                             false,
                                             1, () {
                                           isCorrect = false;
+                                          playLocalAssetWrong();
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            isEnglishFlagVisible, isCorrectNUM = 0,
+                                            isEnglishFlagVisible,
+                                            isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1095,6 +1259,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             false,
                                             1, () {
                                           isCorrect = false;
+                                          playLocalAssetWrong();
                                           showMessage(isCorrect);
                                         }),
                                       ],
@@ -1110,7 +1275,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           return Column(
                             children: [
                               buildCard(
-                                  isEnglishFlagVisible, isCorrectNUM = 2,
+                                  isEnglishFlagVisible,
+                                  isCorrectNUM = 2,
                                   level,
                                   row2,
                                   column2,
@@ -1126,7 +1292,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            isEnglishFlagVisible, isCorrectNUM = 0,
+                                            isEnglishFlagVisible,
+                                            isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1134,10 +1301,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                             false,
                                             1, () {
                                           isCorrect = false;
+                                          playLocalAssetWrong();
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            isEnglishFlagVisible, isCorrectNUM = 0,
+                                            isEnglishFlagVisible,
+                                            isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1145,6 +1314,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             false,
                                             1, () {
                                           isCorrect = false;
+                                          playLocalAssetWrong();
                                           showMessage(isCorrect);
                                         }),
                                       ],
@@ -1154,7 +1324,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            isEnglishFlagVisible, isCorrectNUM = 1,
+                                            isEnglishFlagVisible,
+                                            isCorrectNUM = 1,
                                             level,
                                             row2,
                                             column2,
@@ -1166,7 +1337,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            isEnglishFlagVisible, isCorrectNUM = 0,
+                                            isEnglishFlagVisible,
+                                            isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1174,6 +1346,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             false,
                                             1, () {
                                           isCorrect = false;
+                                          playLocalAssetWrong();
                                           showMessage(isCorrect);
                                         }),
                                       ],
@@ -1189,7 +1362,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           return Column(
                             children: [
                               buildCard(
-                                  isEnglishFlagVisible, isCorrectNUM = 2,
+                                  isEnglishFlagVisible,
+                                  isCorrectNUM = 2,
                                   level,
                                   row2,
                                   column2,
@@ -1205,7 +1379,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            isEnglishFlagVisible, isCorrectNUM = 0,
+                                            isEnglishFlagVisible,
+                                            isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1213,10 +1388,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                             false,
                                             1, () {
                                           isCorrect = false;
+                                          playLocalAssetWrong();
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            isEnglishFlagVisible, isCorrectNUM = 0,
+                                            isEnglishFlagVisible,
+                                            isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1224,6 +1401,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             false,
                                             1, () {
                                           isCorrect = false;
+                                          playLocalAssetWrong();
                                           showMessage(isCorrect);
                                         }),
                                       ],
@@ -1233,7 +1411,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Column(
                                       children: [
                                         buildCard(
-                                            isEnglishFlagVisible, isCorrectNUM = 0,
+                                            isEnglishFlagVisible,
+                                            isCorrectNUM = 0,
                                             level,
                                             row2,
                                             column2,
@@ -1241,10 +1420,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                             false,
                                             1, () {
                                           isCorrect = false;
+                                          playLocalAssetWrong();
                                           showMessage(isCorrect);
                                         }),
                                         buildCard(
-                                            isEnglishFlagVisible, isCorrectNUM = 1,
+                                            isEnglishFlagVisible,
+                                            isCorrectNUM = 1,
                                             level,
                                             row2,
                                             column2,
@@ -1268,7 +1449,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                   ),
                 ),
-                GestureDetector(
+                /*GestureDetector(
                   onTap: () {
                     setState(() {
                       // Reset hasAnsweredCorrectly when moving to the next card
@@ -1287,6 +1468,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       isOther = false;
                       isVisible = false;
                       if (displayedCardsCount == numberOfcircles) {
+                        playLocalAssetEndLevel();
                         completelyCorrect = wrongAnswers == 0;
                         storeData(widget.quizletId, true, completelyCorrect);
                         // Call onQuizletCompleted() when quizlet is completed
@@ -1317,7 +1499,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
-                )
+                )*/
               ],
             ),
             /* floatingActionButton: showNextButton
