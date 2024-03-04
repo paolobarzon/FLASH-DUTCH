@@ -14,7 +14,7 @@ class ButtonPage extends StatefulWidget {
   final bool completelyCorrect;
   //final String completelyCorrect;
 
-  ButtonPage({required this.completelyCorrect,
+  const ButtonPage({super.key, required this.completelyCorrect,
 });
 
   @override
@@ -27,7 +27,7 @@ class _ButtonPageState extends State<ButtonPage> {
   String quizletId = '';
   int globalRowCounter = 1;
   bool isFlagSwapped = true;
-  List<bool> levelVisibility = [false, false, false, false, false];
+  List<bool> levelVisibility = [false, false, false, false, false, false];
   Map<String, Color> quizletCompletionStatus =
       {}; // Map to store completion status
   Color buttonColor = Colors.blue;
@@ -143,7 +143,7 @@ class _ButtonPageState extends State<ButtonPage> {
           toolbarHeight: 100.0,
           //backgroundColor: Colors.pink,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               // Navigate to a specific page when the back button is pressed
               Navigator.pushReplacement(
@@ -152,7 +152,7 @@ class _ButtonPageState extends State<ButtonPage> {
               );
             },
           ),
-          title: Row(
+          title: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               //SizedBox(width: 8), // Adjust spacing as needed
@@ -163,69 +163,60 @@ class _ButtonPageState extends State<ButtonPage> {
             ],
           ),
           actions: [
-            Container(
-              /*decoration: BoxDecoration(
-                border: Border.all(
-                  color: kPrimaryGradient.colors.first, // Use kPrimaryGradient color
-                  width: 4, // Adjust the width of the border as needed
-                ),
-                borderRadius: BorderRadius.circular(10), // Set rounded corners
-              ),*/
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 2.0, horizontal: 6.0),
-                child: GestureDetector(
-                  onTap: () {
-                    toggleFlagPosition();
-                    // Determine the message based on the value of isFlagSwapped
-                    String message = isFlagSwapped
-                        ? 'The words to guess are now in Dutch; the solutions are in English.'
-                        : 'The words to guess are now in English; the solutions are in Dutch.';
-                    // Show SnackBar when flags are tapped
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          message,
-                          style: TextStyle(
-                            fontSize: 18, // Adjust the font size as needed
-                          ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 2.0, horizontal: 6.0),
+              child: GestureDetector(
+                onTap: () {
+                  toggleFlagPosition();
+                  // Determine the message based on the value of isFlagSwapped
+                  String message = isFlagSwapped
+                      ? 'The words to guess are now in Dutch; the solutions are in English.'
+                      : 'The words to guess are now in English; the solutions are in Dutch.';
+                  // Show SnackBar when flags are tapped
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        message,
+                        style: const TextStyle(
+                          fontSize: 18, // Adjust the font size as needed
                         ),
-                        duration: Duration(seconds: 3), // Set duration
                       ),
-                    );
-                  },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(right: 16.0), // Adjust the spacing as needed
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.settings,
-                            size: 32.0, // Adjust the size as needed
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SettingsPage(),
-                                settings: RouteSettings(
-                                  arguments: isFlagSwapped,
-                                ),
+                      duration: const Duration(seconds: 3), // Set duration
+                    ),
+                  );
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16.0), // Adjust the spacing as needed
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.settings,
+                          size: 32.0, // Adjust the size as needed
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SettingsPage(),
+                              settings: RouteSettings(
+                                arguments: isFlagSwapped,
                               ),
-                            ).then((result) {
-                              if (result != null) {
-                                setState(() {
-                                  isFlagSwapped = result;
-                                });
-                              }
-                            });
-                          },
-                        ),
+                            ),
+                          ).then((result) {
+                            if (result != null) {
+                              setState(() {
+                                isFlagSwapped = result;
+                              });
+                            }
+                          });
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -235,11 +226,12 @@ class _ButtonPageState extends State<ButtonPage> {
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
-            padding: EdgeInsets.all(5), // Adjust the top padding as needed
+            padding: const EdgeInsets.all(5), // Adjust the top padding as needed
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 for (int i = 0; i < levelVisibility.length; i++)
+                  // CHANGE THIS TO 5 TO HIDE AND NOT SHOW THE B1/B2 LEVEL
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -277,11 +269,13 @@ class _ButtonPageState extends State<ButtonPage> {
                                       return 'A2/B1';
                                     case 4:
                                       return 'B1';
+                                    case 5:
+                                      return 'B1/B2';
                                     default:
                                       return '';
                                   }
                                 })(),
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 30.0,
                                     fontWeight: FontWeight.bold),
@@ -295,18 +289,18 @@ class _ButtonPageState extends State<ButtonPage> {
                           child: Column(
                             children: [
                               GridView.builder(
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 // Disable GridView scrolling
                                 shrinkWrap: true,
                                 gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 4,
                                 ),
                                 itemCount: i == 0
                                     ? 12
                                     : (i == 1
                                         ? 28
-                                        : (i == 2 ? 40 : (i == 3 ? 40 : 20))),
+                                        : (i == 2 ? 40 : (i == 3 ? 40 : (i ==4 ? 20 : 15)))),
                                 // Or whatever the number of buttons per level
                                 itemBuilder: (context, index) {
                                   // Build your buttons here
@@ -334,6 +328,9 @@ class _ButtonPageState extends State<ButtonPage> {
                                         1 +
                                         10; // Rows from 1 to 20 for the first 80 items
                                   }
+                                  if (i == 5) {
+                                    row = index + 1; // Rows from 1 to 20 for the first 80 items
+                                  }
                                   /*if (index < 80) {
                                     row = index ~/ 4 +
                                         1; // Rows from 1 to 20 for the first 80 items
@@ -357,8 +354,12 @@ class _ButtonPageState extends State<ButtonPage> {
                                   } else if (i == 3) {
                                     level = "A2/B1";
                                     quizletId = '$level - $row - $column';
-                                  } else {
+                                  } else if (i==4){
                                     level = "B1";
+                                    quizletId = '$level - $row - $column';
+                                  }
+                                  else{
+                                    level = "B1/B2";
                                     quizletId = '$level - $row - $column';
                                   }
 
@@ -375,7 +376,7 @@ class _ButtonPageState extends State<ButtonPage> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => MyHomePage(
-                                            IsEnglishFlagVisible: isFlagSwapped,
+                                            isEnglishFlagVisible: isFlagSwapped,
                                             level: level,
                                             row: row,
                                             column: column,
@@ -387,7 +388,7 @@ class _ButtonPageState extends State<ButtonPage> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(4.0),
                                       child: AnimatedOpacity(
-                                        duration: Duration(milliseconds: 500),
+                                        duration: const Duration(milliseconds: 500),
                                         opacity: levelVisibility[i] ? 1.0 : 0.0,
                                         child: DecoratedBox(
                                           decoration: BoxDecoration(
@@ -398,20 +399,20 @@ class _ButtonPageState extends State<ButtonPage> {
                                               ],
                                               begin: Alignment.topLeft,
                                               end: Alignment.bottomRight,
-                                              stops: [0.0, 1.0],
+                                              stops: const [0.0, 1.0],
                                             ),
                                             borderRadius: BorderRadius.circular(12),
                                           ),
                                           child: Container(
                                             alignment: Alignment.center,
-                                            margin: EdgeInsets.all(6),
+                                            margin: const EdgeInsets.all(6),
                                             decoration: BoxDecoration(
                                               color: getBoxColor(quizletId), // Use completion status to determine color
                                               borderRadius: BorderRadius.circular(12),
                                             ),
                                             child: Text(
-                                              '$level:\n$row - $column',
-                                              style: TextStyle(
+                                              i == 5 ? '$level:\n$row' : '$level:\n$row - $column',
+                                              style: const TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold, // Make the text bold
                                                 fontSize: 23, // Set the font size

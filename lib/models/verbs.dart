@@ -131,7 +131,7 @@ class _MyVerbsState extends State<MyVerbs> {
             level: "A0",
             row: 999,
             column: 999,
-            IsEnglishFlagVisible: true,
+            isEnglishFlagVisible: true,
             difficulty: widget.difficulty,
           ),
         ),

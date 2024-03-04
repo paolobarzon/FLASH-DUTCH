@@ -46,11 +46,15 @@ dependencies:
 
   open_file_plus: ^3.4.1
 
-  csv: ^5.1.1
+  csv: ^6.0.0
 
   country_icons: ^3.0.0
 
   shared_preferences: ^2.2.2
+
+  audioplayers: ^5.2.1 # Check for the latest version on pub.dev
+
+  fluttertoast: ^8.0.7 # Check for the latest version on pub.dev
 
 
 dev_dependencies:
@@ -86,6 +90,7 @@ flutter:
     - assets/wordscopy.csv
     - assets/flash utch.png
     - assets/FLASHDUTCH.png
+    - assets/Positivesound.wav
 
   # To add assets to your application, add an assets section, like this:
   # assets:

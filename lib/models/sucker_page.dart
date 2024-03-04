@@ -17,7 +17,7 @@ class SuckerPage extends StatelessWidget {
   final int row;
   final int column;
   final String level;
-  final bool IsEnglishFlagVisible;
+  final bool isEnglishFlagVisible;
   final String difficulty;
 
   SuckerPage(
@@ -27,7 +27,7 @@ class SuckerPage extends StatelessWidget {
       required this.row,
       required this.column,
       required this.level,
-      required this.IsEnglishFlagVisible, required this.difficulty,});
+      required this.isEnglishFlagVisible, required this.difficulty,});
 
   @override
   Widget build(BuildContext context) {
