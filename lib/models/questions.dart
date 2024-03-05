@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:csv/csv.dart';
 import 'dart:math';
+import '../card_builder.dart';
+import '../utils.dart';
 
 //import 'package:country_icons/country_icons.dart';
 ///import 'package:simple_app_simple/main.dart';
@@ -84,6 +86,12 @@ class _MyHomePageState extends State<MyHomePage> {
   int isCorrectNUM = 2;
   bool isVisible = false;
   late OverlayEntry overlayEntry; // Define it at class level
+  static const double baseScreenWidth = 411.42857142857144;
+  String wordToGuess = "";
+  int indexEnd = 0;
+  int indexStart = 0;
+  List<String> wordList = [];
+  OverlayEntry? currentOverlayEntry; // Variable to store the current overlay entry
 
   //final player = AudioPlayer();
 
@@ -176,7 +184,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // Return the index if a match is found
         ////print(_data[i]);
         ////print("data i above, i below");
-        ////print(i);
+        print(i);
         index1 = i;
         //return i;
       }
@@ -291,8 +299,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return numberRegex.hasMatch(str);
   }
 
-  String getCorrectString(bool isEnglishFlagVisible, int index, int column,
-      bool isArticle, bool isVerb, bool isOther) {
+  String getCorrectString(bool isEnglishFlagVisible, int index, int indexStart,
+      int indexEnd, int column, bool isArticle, bool isVerb, bool isOther) {
     ////print( "in function correct string");
     ////print(isArticle);
     ////print(isVerb);
@@ -302,7 +310,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ////print("index");
     ////print(index);
     String mainString = _data[index][column].toString();
-    ////print("ehre should be the same as above: $mainString");
+    print("ehre should be the same as above: $mainString");
     ////print('we enter getcorrectstring with $index as index and $indexOfDutchWord');
 
     ////print ma
@@ -317,29 +325,41 @@ class _MyHomePageState extends State<MyHomePage> {
     if (isEnglishFlagVisible) {
       if (isArticle & !(indexOfDutchWord == index)) {
         // Your logic to modify index based on isArticle
-        while (!mainString.endsWith(articleCheckEN)) {
+        while ((!mainString.endsWith(articleCheckEN)) ||
+            (wordList.contains(mainString))) {
           ////print("check article");
-          index++;
+          //index++;
+          Random random = Random();
+          // Generate a random number within the range [index, indexEnd - 1]
+          int index = indexStart + random.nextInt(indexEnd - indexStart);
           mainString = _data[index][column]
               .toString(); // Move to the next index until the condition is met
         }
       } else {
         if (isVerb & !(indexOfDutchWord == index)) {
-          while (!mainString.startsWith(verbCheckEN)) {
+          while ((!mainString.startsWith(verbCheckEN)) ||
+              (wordList.contains(mainString))) {
             ////print("check verb");
             ////print(mainString);
-            index++;
+            //index++;
+            Random random = Random();
+            // Generate a random number within the range [index, indexEnd - 1]
+            int index = indexStart + random.nextInt(indexEnd - indexStart);
             mainString = _data[index][column]
                 .toString(); // Move to the next index until the condition is met
           }
         } else {
           if (!(indexOfDutchWord == index)) {
             while (mainString.startsWith(verbCheckEN) |
-                mainString.endsWith(articleCheckEN) |
-                containsANumber(mainString)) {
+                    mainString.endsWith(articleCheckEN) |
+                    containsANumber(mainString) ||
+                (wordList.contains(mainString))) {
               ////print("check other");
               ////print(mainString);
-              index++;
+              //index++;
+              Random random = Random();
+              // Generate a random number within the range [index, indexEnd - 1]
+              int index = indexStart + random.nextInt(indexEnd - indexStart);
               mainString = _data[index][column]
                   .toString(); // Move to the next index until the condition is met
             }
@@ -352,7 +372,10 @@ class _MyHomePageState extends State<MyHomePage> {
         while (!mainString.endsWith(articleCheck) &&
             !mainString.endsWith(articleCheck2)) {
           ////print("check article");
-          index++;
+          //index++;
+          Random random = Random();
+          // Generate a random number within the range [index, indexEnd - 1]
+          int index = indexStart + random.nextInt(indexEnd - indexStart);
           mainString = _data[index][column]
               .toString(); // Move to the next index until the condition is met
         }
@@ -361,7 +384,10 @@ class _MyHomePageState extends State<MyHomePage> {
           while (!mainString.endsWith(verbCheck)) {
             ////print("check verb");
             ////print(mainString);
-            index++;
+            //index++;
+            Random random = Random();
+            // Generate a random number within the range [index, indexEnd - 1]
+            int index = indexStart + random.nextInt(indexEnd - indexStart);
             mainString = _data[index][column]
                 .toString(); // Move to the next index until the condition is met
           }
@@ -373,7 +399,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 containsANumber(mainString)) {
               ////print("check other");
               ////print(mainString);
-              index++;
+              //index++;
+              Random random = Random();
+              // Generate a random number within the range [index, indexEnd - 1]
+              int index = indexStart + random.nextInt(indexEnd - indexStart);
               mainString = _data[index][column]
                   .toString(); // Move to the next index until the condition is met
             }
@@ -397,6 +426,7 @@ class _MyHomePageState extends State<MyHomePage> {
           .first}";
 
      */
+    wordList.add(mainString);
     if (containsNumber(mainString)) {
       ////print("ah ha $mainString $index");
       mainString = _data[index + 1][column].toString();
@@ -451,7 +481,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 
-  void playLocalAsset() {
+  /*void playLocalAsset() {
     AudioPlayer().play(AssetSource('correct.mp3'));
   }
 
@@ -462,6 +492,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void playLocalAssetEndLevel() {
     AudioPlayer().play(AssetSource('end level.wav'));
+  }*/
+
+  double getScalingFactor(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+    //print("$screenWidth $baseScreenWidth");
+    return screenWidth / baseScreenWidth;
+  }
+
+  double getAdjustedFontSize(BuildContext context, double baseFontSize) {
+    return baseFontSize * getScalingFactor(context);
   }
 
   Widget buildCard(
@@ -476,8 +516,11 @@ class _MyHomePageState extends State<MyHomePage> {
       Function() onTap) {
     ////print( "hey");
     ////print('$level, $thema, $section $column, index is $index');
+    int randomNumber = 0;
     double screenWidth = MediaQuery.of(context).size.width;
-    double cardWidth = (column == 1) ? screenWidth / 2 - 20 : screenWidth - 20;
+    double cardWidth = (column == 1 || level == "B1/B2")
+        ? screenWidth - 20
+        : screenWidth / 2 - 20;
     if (!isEnglishFlagVisible) {
       // If the English flag is not visible, adjust the column value
       if (column == 1) {
@@ -494,9 +537,9 @@ class _MyHomePageState extends State<MyHomePage> {
 // Assuming this part is executed when you initially set up the quizlet:
     if (isThisTheFirstWordEverOfTheQuizlet) {
       List<int> indices = searchInCSV(level, thema, section);
-      //print(indices);
-      int indexStart = indices[0] + 1;
-      int indexEnd = indices[1] - 1;
+      print("the chosen indeces are: $indices");
+      indexStart = indices[0] + 1;
+      indexEnd = indices[1] - 1;
       numberOfcircles = indexEnd - indexStart + 1;
       //print("number of circles is $numberOfcircles");
 
@@ -516,6 +559,7 @@ class _MyHomePageState extends State<MyHomePage> {
         if (++currentIndex < shuffledIndices.length) {
           indexOfTheWordToGuess = shuffledIndices[currentIndex];
           mainString = _data[indexOfTheWordToGuess][column].toString();
+          wordToGuess = mainString;
         } else {
           // All words have been displayed, handle this case as needed
           ////print("All words have been displayed.");
@@ -532,13 +576,18 @@ class _MyHomePageState extends State<MyHomePage> {
         }
         //index++;
         else {
-          mainString = _data[index][column].toString();
+          Random random = Random();
+          print("the indeces are $indexStart $indexEnd");
+          // Generate a random number within the range [index, indexEnd - 1]
+          randomNumber = indexStart + random.nextInt(indexEnd - indexStart);
+          print("the index of the wrong word is $randomNumber");
+          mainString = _data[randomNumber][column].toString();
         }
       }
     }
     ////print(index);
 
-    ////print(mainString);
+    print(mainString);
     //mainString = _data[index][column].toString();
     ////print("first try at getting the word: $mainString");
     ////print("we are identifying the type... $index and $indexOfDutchWord should be the same");
@@ -610,7 +659,7 @@ class _MyHomePageState extends State<MyHomePage> {
       //var newString = mainString.substring(mainString.length - 4);
       mainString = 'Het $middleString';
     }
-    if (mainString.endsWith(" de")) {
+    if ((mainString.endsWith(" de") || (mainString.endsWith(" (de)")))) {
       var middleString = mainString.replaceAll(articleCheck, '').trim();
       //var newString = mainString.substring(mainString.length - 3);
       mainString = 'De $middleString';
@@ -622,7 +671,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     mainString = modifyDisplayedTextForThe(mainString);
     mainString = capitalize(mainString);
-    ////print(mainString);
+    print(mainString);
     /*double fontSize2 = 24.0;
     if ((isEnglishFlagVisible && column==0) ||
         (!isEnglishFlagVisible && column==1)){
@@ -669,20 +718,42 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             padding: const EdgeInsets.all(16),
             width: cardWidth,
-            height: 100,
+            height: MediaQuery.of(context).size.height * 0.12,
+            // 10% of screen height
+
             child: Align(
               alignment: Alignment.center,
               child: Text(
                 (column == 0 && isEnglishFlagVisible) ||
                         (column == 1 && !isEnglishFlagVisible)
                     ? mainString
-                    : getCorrectString(isEnglishFlagVisible, index, column,
-                        isArticle, isVerb, isOther),
+                    : (indexOfTheWordToGuess == index)
+                        ? getCorrectString(
+                            isEnglishFlagVisible,
+                            index,
+                            indexStart,
+                            indexEnd,
+                            column,
+                            isArticle,
+                            isVerb,
+                            isOther)
+                        : getCorrectString(
+                            isEnglishFlagVisible,
+                            randomNumber,
+                            indexStart,
+                            indexEnd,
+                            column,
+                            isArticle,
+                            isVerb,
+                            isOther),
                 style: TextStyle(
                   fontSize: (column == 0 && isEnglishFlagVisible) ||
                           (column == 1 && !isEnglishFlagVisible)
-                      ? 28
-                      : fontSize2,
+                      ? getAdjustedFontSize(
+                          context, 28) // Adjusts the font size dynamically
+                      : level == "B1/B2"
+                          ? getAdjustedFontSize(context, 20)
+                          : getAdjustedFontSize(context, 24),
                   fontWeight: (column == 0 && isEnglishFlagVisible) ||
                           (column == 1 && !isEnglishFlagVisible)
                       ? FontWeight.bold
@@ -702,115 +773,120 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   OverlayEntry _createOverlayEntry(isCorrect) {
-    overlayEntry = OverlayEntry( // Use the class-level variable
+    overlayEntry = OverlayEntry(
+      // Use the class-level variable
       builder: (context) => Stack(
-          children: [
-            Positioned(
-              left: 0,
-              top: MediaQuery.of(context).size.height * 4 / 5 - 25, // 3/4 down
-              right: 0,
-              child:  GestureDetector(
-                onTap: () {
-                  print("Overlay button tapped!");
-                  if (isCorrect) {
-                    overlayEntry.remove();
-                    setState(() {
-                      // Reset hasAnsweredCorrectly when moving to the next card
-                      hasAnsweredCorrectly = false;
-                      isThisTheFirstTry = true;
-                      displayedCardsCount++;
-                      if (didIgetItWrongFirst) {
-                        updateProgress(!isCorrect);
-                      } else {
-                        updateProgress(isCorrect);
-                      }
-                      didIgetItWrongFirst = false;
-                      isCorrect = false;
-                      isArticle = false;
-                      isVerb = false;
-                      isOther = false;
-                      if (displayedCardsCount == numberOfcircles) {
-                        completelyCorrect = wrongAnswers == 0;
-                        storeData(widget.quizletId, true, completelyCorrect);
-                        // Call onQuizletCompleted() when quizlet is completed
-                        onQuizletCompleted(selectedQuizlet, widget.level, widget.row,
-                            widget.column)
-                            .then((prefs) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SuckerPage(
-                                rightAnswers: rightAnswers,
-                                wrongAnswers: wrongAnswers,
-                                whatWasIdoing: "questions",
-                                level: widget.level,
-                                row: widget.row,
-                                column: widget.column,
-                                isEnglishFlagVisible: widget.isEnglishFlagVisible,
-                                // Pass the SharedPreferences instance
-                                difficulty: '',
-                              ),
+        children: [
+          Positioned(
+            left: 0,
+            top: MediaQuery.of(context).size.height * 4 / 5 - 25, // 3/4 down
+            right: 0,
+            child: GestureDetector(
+              onTap: () {
+                print("Overlay button tapped!");
+                if (isCorrect) {
+                  overlayEntry.remove();
+                  setState(() {
+                    // Reset hasAnsweredCorrectly when moving to the next card
+                    hasAnsweredCorrectly = false;
+                    isThisTheFirstTry = true;
+                    displayedCardsCount++;
+                    if (didIgetItWrongFirst) {
+                      updateProgress(!isCorrect);
+                    } else {
+                      updateProgress(isCorrect);
+                    }
+                    didIgetItWrongFirst = false;
+                    isCorrect = false;
+                    isArticle = false;
+                    isVerb = false;
+                    isOther = false;
+                    wordList = [];
+                    if (displayedCardsCount == numberOfcircles) {
+                      completelyCorrect = wrongAnswers == 0;
+                      storeData(widget.quizletId, true, completelyCorrect);
+                      // Call onQuizletCompleted() when quizlet is completed
+                      onQuizletCompleted(selectedQuizlet, widget.level,
+                              widget.row, widget.column)
+                          .then((prefs) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SuckerPage(
+                              rightAnswers: rightAnswers,
+                              wrongAnswers: wrongAnswers,
+                              whatWasIdoing: "questions",
+                              level: widget.level,
+                              row: widget.row,
+                              column: widget.column,
+                              isEnglishFlagVisible: widget.isEnglishFlagVisible,
+                              // Pass the SharedPreferences instance
+                              difficulty: '',
                             ),
-                          );
-                        });
-                      }
-                    });
-                  }
-                  else{
-                    overlayEntry.remove();
-
-                  }
-                  // Perform your action here
-                },
-                child: Container(
-                  /*width: 250, // Button width
+                          ),
+                        );
+                      });
+                    }
+                  });
+                } else {
+                  overlayEntry.remove();
+                }
+                // Perform your action here
+              },
+              child: Container(
+                /*width: 250, // Button width
                   height: 150, // Button height*/
-                  decoration: BoxDecoration(
-                    color: isCorrect ? Colors.green : Colors.red,
-                    // Button color
-                    borderRadius: BorderRadius.circular(10), // Rounded corners
-                  ),
-                  child: IntrinsicWidth(
-                    // Use IntrinsicWidth to size the container to its child's width
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20.0, vertical: 10.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        // Minimize the row's width to fit its children
-                        children: [
-                          Icon(
-                            isCorrect ? Icons.check : Icons.close,
-                            color: Colors.white,
+                decoration: BoxDecoration(
+                  color: isCorrect ? Colors.green : Colors.red,
+                  // Button color
+                  borderRadius: BorderRadius.circular(10), // Rounded corners
+                ),
+                child: IntrinsicWidth(
+                  // Use IntrinsicWidth to size the container to its child's width
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 10.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      // Minimize the row's width to fit its children
+                      children: [
+                        Icon(
+                          isCorrect ? Icons.check : Icons.close,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 8.0),
+                        Text(
+                          isCorrect ? "Correct!" : "Wrong!",
+                          style: const TextStyle(
+                            fontSize: 28.0,
+                            fontFamily: 'Roboto',
+                            // Set the font family for this Text widget to Roboto
+                            color: Colors.black,
+                            decoration: TextDecoration
+                                .none, // Ensure no underline is applied
                           ),
-                          const SizedBox(width: 8.0),
-                          Text(
-                            isCorrect ? "Correct!" : "Wrong!",
-                            style: const TextStyle(
-                              fontSize: 28.0,
-                              fontFamily: 'Roboto',
-                              // Set the font family for this Text widget to Roboto
-                              color: Colors.black,
-                              decoration: TextDecoration
-                                  .none, // Ensure no underline is applied
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
     );
     return overlayEntry;
   }
 
   void showOverlay(BuildContext context, bool isCorrect) {
+    if (currentOverlayEntry != null) {
+      // If there's already an overlay entry, remove it before inserting a new one
+      currentOverlayEntry!.remove();
+    }
     OverlayEntry localoverlayEntry = _createOverlayEntry(isCorrect);
     Overlay.of(context).insert(localoverlayEntry);
+    currentOverlayEntry = localoverlayEntry; // Update the current overlay entry
 
     // Optionally, to automatically remove the overlay after some time:
     Future.delayed(Duration(seconds: 5), () {
@@ -942,10 +1018,10 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  int generateRandomNumber(int min, int max) {
+  /*int generateRandomNumber(int min, int max) {
     Random random = Random();
     return min + random.nextInt(max - min + 1);
-  }
+  }*/
 
   @override
   void initState() {
@@ -970,12 +1046,6 @@ class _MyHomePageState extends State<MyHomePage> {
     int column2 = widget.column;
     String level = widget.level;
     bool isEnglishFlagVisible = widget.isEnglishFlagVisible;
-    //isEnglishFlagVisible = false;
-    ////print(is)
-    ////print("$row2 $column2");
-
-    ////print(numberOfcircles);
-    ////print(numberOfcircles);
 
     return Center(
         // Center the content vertically and horizontally
@@ -1032,422 +1102,710 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: progressBar(displayedCardsCount /
                       numberOfcircles), // Use the progressBar widget here with a mock progress value
                 ),
+                /*Expanded(
+                    child: buildCustomCard()
+                ),*/
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: 1,
-                    itemBuilder: (_, index) {
-                      // Check if _data is not null and not empty
-                      if (_data.isEmpty) {
-                        return const CircularProgressIndicator();
-                      }
+                  child: (level == "B1/B2")
+                      ? ListView.builder(
+                          itemCount: 1,
+                          itemBuilder: (_, index) {
+                            // Check if _data is not null and not empty
+                            if (_data.isEmpty) {
+                              return const CircularProgressIndicator();
+                            }
 
-                      Random random = Random();
-                      /*if (isA0A1Selected && isA2Selected && !isA2B1Selected) {
-                        // A0/A1 and A2 are selected
-                        min = 1;
-                        max = 2059;
-                      } else if (isA0A1Selected &&
-                          !isA2Selected &&
-                          isA2B1Selected) {
-                        // A0/A1 and A2/B1 are selected
-                        min = 1;
-                        max = 3300;
-                      } else if (!isA0A1Selected &&
-                          isA2Selected &&
-                          isA2B1Selected) {
-                        // A2 and A2/B1 are selected
-                        min = 931;
-                        max = 3300;
-                      } else if (isA0A1Selected &&
-                          !isA2Selected &&
-                          !isA2B1Selected) {
-                        // Only A0/A1 is selected
-                        min = 1;
-                        max = 930;
-                      } else if (!isA0A1Selected &&
-                          isA2Selected &&
-                          !isA2B1Selected) {
-                        // Only A2 is selected
-                        min = 931;
-                        max = 2059;
-                      } else if (!isA0A1Selected &&
-                          !isA2Selected &&
-                          isA2B1Selected) {
-                        // Only A2/B1 is selected
-                        min = 2060;
-                        max = 3300;
-                      } else {
-                        // None or all buttons are selected, handle accordingly
-                      }*/
-                      min = 0;
-                      max = 3656;
-                      int randomIndex = generateRandomNumber(min, max);
-                      int randomIndexSecondColumn =
-                          generateRandomNumber(min, max);
-                      int randomIndexThirdColumn =
-                          generateRandomNumber(min, max);
-                      int randomIndexFourthColumn =
-                          generateRandomNumber(min, max);
-                      ////print("$row2 $column2");
+                            Random random = Random();
 
-                      int caseNumber = random.nextInt(4) + 1;
-                      ////print("row");
-                      ////print(row2);
-                      ////print("column");
-                      ////print(column2);
+                            min = 0;
+                            max = 3656;
+                            int randomIndex = generateRandomNumber(min, max);
+                            int randomIndexSecondColumn =
+                                generateRandomNumber(min, max);
+                            int randomIndexThirdColumn =
+                                generateRandomNumber(min, max);
+                            int randomIndexFourthColumn =
+                                generateRandomNumber(min, max);
 
-                      switch (caseNumber) {
-                        case 1:
-                          ////print("case 1");
-                          return Column(
-                            children: [
-                              buildCard(
-                                  isEnglishFlagVisible,
-                                  isCorrectNUM = 2,
-                                  level,
-                                  row2,
-                                  column2,
-                                  randomIndex,
-                                  !random.nextBool(),
-                                  0, () {
-                                isCorrect = !random.nextBool();
-                              }),
-                              const SizedBox(height: 40),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      children: [
-                                        buildCard(
-                                            isEnglishFlagVisible,
-                                            isCorrectNUM = 1,
-                                            level,
-                                            row2,
-                                            column2,
-                                            indexOfTheWordToGuess,
-                                            true,
-                                            1, () {
-                                          isCorrect = true;
-                                          playLocalAsset();
-                                          showMessage(isCorrect);
-                                        }),
-                                        buildCard(
-                                            isEnglishFlagVisible,
-                                            isCorrectNUM = 0,
-                                            level,
-                                            row2,
-                                            column2,
-                                            randomIndexSecondColumn,
-                                            false,
-                                            1, () {
-                                          isCorrect = false;
-                                          playLocalAssetWrong();
-                                          showMessage(isCorrect);
-                                        }),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      children: [
-                                        buildCard(
-                                            isEnglishFlagVisible,
-                                            isCorrectNUM = 0,
-                                            level,
-                                            row2,
-                                            column2,
-                                            randomIndexThirdColumn,
-                                            false,
-                                            1, () {
-                                          isCorrect = false;
-                                          showMessage(isCorrect);
-                                        }),
-                                        buildCard(
-                                            isEnglishFlagVisible,
-                                            isCorrectNUM = 0,
-                                            level,
-                                            row2,
-                                            column2,
-                                            randomIndexFourthColumn,
-                                            false,
-                                            1, () {
-                                          isCorrect = false;
-                                          playLocalAssetWrong();
-                                          showMessage(isCorrect);
-                                        }),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          );
+                            int caseNumber = random.nextInt(4) + 1;
+                            //caseNumber = 2;
+                            switch (caseNumber) {
+                              case 1:
+                                ////print("case 1");
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  // Set mainAxisSize to min
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 2,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndex,
+                                        !random.nextBool(),
+                                        0, () {
+                                      isCorrect = !random.nextBool();
+                                    }),
+                                    const SizedBox(height: 40),
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 1,
+                                        level,
+                                        row2,
+                                        column2,
+                                        indexOfTheWordToGuess,
+                                        true,
+                                        1, () {
+                                      isCorrect = true;
+                                      playLocalAsset();
+                                      showMessage(isCorrect);
+                                    }),
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 0,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndexSecondColumn,
+                                        false,
+                                        1, () {
+                                      isCorrect = false;
+                                      playLocalAssetWrong();
+                                      showMessage(isCorrect);
+                                    }),
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 0,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndexThirdColumn,
+                                        false,
+                                        1, () {
+                                      isCorrect = false;
+                                      showMessage(isCorrect);
+                                    }),
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 0,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndexThirdColumn,
+                                        false,
+                                        1, () {
+                                      isCorrect = false;
+                                      showMessage(isCorrect);
+                                    }),
+                                  ],
+                                );
 
-                        case 2:
-                          ////print("case 2");
-                          return Column(
-                            children: [
-                              buildCard(
-                                  isEnglishFlagVisible,
-                                  isCorrectNUM = 2,
-                                  level,
-                                  row2,
-                                  column2,
-                                  randomIndex,
-                                  !random.nextBool(),
-                                  0, () {
-                                isCorrect = !random.nextBool();
-                              }),
-                              const SizedBox(height: 40),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      children: [
-                                        buildCard(
-                                            isEnglishFlagVisible,
-                                            isCorrectNUM = 0,
-                                            level,
-                                            row2,
-                                            column2,
-                                            randomIndexSecondColumn,
-                                            false,
-                                            1, () {
-                                          isCorrect = false;
-                                          playLocalAssetWrong();
-                                          showMessage(isCorrect);
-                                        }),
-                                        buildCard(
-                                            isEnglishFlagVisible,
-                                            isCorrectNUM = 1,
-                                            level,
-                                            row2,
-                                            column2,
-                                            indexOfTheWordToGuess,
-                                            true,
-                                            1, () {
-                                          isCorrect = true;
-                                          playLocalAsset();
-                                          showMessage(isCorrect);
-                                        }),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      children: [
-                                        buildCard(
-                                            isEnglishFlagVisible,
-                                            isCorrectNUM = 0,
-                                            level,
-                                            row2,
-                                            column2,
-                                            randomIndexThirdColumn,
-                                            false,
-                                            1, () {
-                                          isCorrect = false;
-                                          playLocalAssetWrong();
-                                          showMessage(isCorrect);
-                                        }),
-                                        buildCard(
-                                            isEnglishFlagVisible,
-                                            isCorrectNUM = 0,
-                                            level,
-                                            row2,
-                                            column2,
-                                            randomIndexFourthColumn,
-                                            false,
-                                            1, () {
-                                          isCorrect = false;
-                                          playLocalAssetWrong();
-                                          showMessage(isCorrect);
-                                        }),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          );
+                              case 2:
+                                ////print("case 2");
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  // Set mainAxisSize to min
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 2,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndex,
+                                        !random.nextBool(),
+                                        0, () {
+                                      isCorrect = !random.nextBool();
+                                    }),
+                                    const SizedBox(height: 40),
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 0,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndexSecondColumn,
+                                        false,
+                                        1, () {
+                                      isCorrect = false;
+                                      playLocalAssetWrong();
+                                      showMessage(isCorrect);
+                                    }),
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 1,
+                                        level,
+                                        row2,
+                                        column2,
+                                        indexOfTheWordToGuess,
+                                        true,
+                                        1, () {
+                                      isCorrect = true;
+                                      playLocalAsset();
+                                      showMessage(isCorrect);
+                                    }),
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 0,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndexThirdColumn,
+                                        false,
+                                        1, () {
+                                      isCorrect = false;
+                                      playLocalAssetWrong();
+                                      showMessage(isCorrect);
+                                    }),
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 0,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndexFourthColumn,
+                                        false,
+                                        1, () {
+                                      isCorrect = false;
+                                      playLocalAssetWrong();
+                                      showMessage(isCorrect);
+                                    }),
+                                  ],
+                                );
 
-                        case 3:
-                          ////print("case 3");
-                          return Column(
-                            children: [
-                              buildCard(
-                                  isEnglishFlagVisible,
-                                  isCorrectNUM = 2,
-                                  level,
-                                  row2,
-                                  column2,
-                                  randomIndex,
-                                  !random.nextBool(),
-                                  0, () {
-                                isCorrect = !random.nextBool();
-                              }),
-                              const SizedBox(height: 40),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      children: [
-                                        buildCard(
-                                            isEnglishFlagVisible,
-                                            isCorrectNUM = 0,
-                                            level,
-                                            row2,
-                                            column2,
-                                            randomIndexSecondColumn,
-                                            false,
-                                            1, () {
-                                          isCorrect = false;
-                                          playLocalAssetWrong();
-                                          showMessage(isCorrect);
-                                        }),
-                                        buildCard(
-                                            isEnglishFlagVisible,
-                                            isCorrectNUM = 0,
-                                            level,
-                                            row2,
-                                            column2,
-                                            randomIndexThirdColumn,
-                                            false,
-                                            1, () {
-                                          isCorrect = false;
-                                          playLocalAssetWrong();
-                                          showMessage(isCorrect);
-                                        }),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      children: [
-                                        buildCard(
-                                            isEnglishFlagVisible,
-                                            isCorrectNUM = 1,
-                                            level,
-                                            row2,
-                                            column2,
-                                            indexOfTheWordToGuess,
-                                            true,
-                                            1, () {
-                                          isCorrect = true;
-                                          playLocalAsset();
-                                          showMessage(isCorrect);
-                                        }),
-                                        buildCard(
-                                            isEnglishFlagVisible,
-                                            isCorrectNUM = 0,
-                                            level,
-                                            row2,
-                                            column2,
-                                            randomIndexFourthColumn,
-                                            false,
-                                            1, () {
-                                          isCorrect = false;
-                                          playLocalAssetWrong();
-                                          showMessage(isCorrect);
-                                        }),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          );
+                              case 3:
+                                ////print("case 3");
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  // Set mainAxisSize to min
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 2,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndex,
+                                        !random.nextBool(),
+                                        0, () {
+                                      isCorrect = !random.nextBool();
+                                    }),
+                                    const SizedBox(height: 40),
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 0,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndexSecondColumn,
+                                        false,
+                                        1, () {
+                                      isCorrect = false;
+                                      playLocalAssetWrong();
+                                      showMessage(isCorrect);
+                                    }),
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 0,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndexThirdColumn,
+                                        false,
+                                        1, () {
+                                      isCorrect = false;
+                                      playLocalAssetWrong();
+                                      showMessage(isCorrect);
+                                    }),
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 1,
+                                        level,
+                                        row2,
+                                        column2,
+                                        indexOfTheWordToGuess,
+                                        true,
+                                        1, () {
+                                      isCorrect = true;
+                                      playLocalAsset();
+                                      showMessage(isCorrect);
+                                    }),
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 0,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndexFourthColumn,
+                                        false,
+                                        1, () {
+                                      isCorrect = false;
+                                      playLocalAssetWrong();
+                                      showMessage(isCorrect);
+                                    }),
+                                  ],
+                                );
 
-                        case 4:
-                          ////print("case 4");
-                          return Column(
-                            children: [
-                              buildCard(
-                                  isEnglishFlagVisible,
-                                  isCorrectNUM = 2,
-                                  level,
-                                  row2,
-                                  column2,
-                                  randomIndex,
-                                  !random.nextBool(),
-                                  0, () {
-                                isCorrect = !random.nextBool();
-                              }),
-                              const SizedBox(height: 40),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
+                              case 4:
+                                ////print("case 4");
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  // Set mainAxisSize to min
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 2,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndex,
+                                        !random.nextBool(),
+                                        0, () {
+                                      isCorrect = !random.nextBool();
+                                    }),
+                                    const SizedBox(height: 40),
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 0,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndexSecondColumn,
+                                        false,
+                                        1, () {
+                                      isCorrect = false;
+                                      playLocalAssetWrong();
+                                      showMessage(isCorrect);
+                                    }),
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 0,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndexThirdColumn,
+                                        false,
+                                        1, () {
+                                      isCorrect = false;
+                                      playLocalAssetWrong();
+                                      showMessage(isCorrect);
+                                    }),
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 0,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndexFourthColumn,
+                                        false,
+                                        1, () {
+                                      isCorrect = false;
+                                      playLocalAssetWrong();
+                                      showMessage(isCorrect);
+                                    }),
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 1,
+                                        level,
+                                        row2,
+                                        column2,
+                                        indexOfTheWordToGuess,
+                                        true,
+                                        1, () {
+                                      isCorrect = true;
+                                      playLocalAsset();
+                                      showMessage(isCorrect);
+                                    }),
+                                  ],
+                                );
+                              default:
+                                return const SizedBox.shrink();
+                            }
+                          },
+                        )
+                      : ListView.builder(
+                          itemCount: 1,
+                          itemBuilder: (_, index) {
+                            // Check if _data is not null and not empty
+                            if (_data.isEmpty) {
+                              return const CircularProgressIndicator();
+                            }
+
+                            Random random = Random();
+
+                            min = 0;
+                            max = 3656;
+                            int randomIndex = generateRandomNumber(min, max);
+                            int randomIndexSecondColumn =
+                                generateRandomNumber(min, max);
+                            int randomIndexThirdColumn =
+                                generateRandomNumber(min, max);
+                            int randomIndexFourthColumn =
+                                generateRandomNumber(min, max);
+
+                            int caseNumber = random.nextInt(4) + 1;
+
+                            switch (caseNumber) {
+                              case 1:
+                                ////print("case 1");
+                                return Column(
+                                  children: [
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 2,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndex,
+                                        !random.nextBool(),
+                                        0, () {
+                                      isCorrect = !random.nextBool();
+                                    }),
+                                    const SizedBox(height: 40),
+                                    Row(
                                       children: [
-                                        buildCard(
-                                            isEnglishFlagVisible,
-                                            isCorrectNUM = 0,
-                                            level,
-                                            row2,
-                                            column2,
-                                            randomIndexSecondColumn,
-                                            false,
-                                            1, () {
-                                          isCorrect = false;
-                                          playLocalAssetWrong();
-                                          showMessage(isCorrect);
-                                        }),
-                                        buildCard(
-                                            isEnglishFlagVisible,
-                                            isCorrectNUM = 0,
-                                            level,
-                                            row2,
-                                            column2,
-                                            randomIndexThirdColumn,
-                                            false,
-                                            1, () {
-                                          isCorrect = false;
-                                          playLocalAssetWrong();
-                                          showMessage(isCorrect);
-                                        }),
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              buildCard(
+                                                  isEnglishFlagVisible,
+                                                  isCorrectNUM = 1,
+                                                  level,
+                                                  row2,
+                                                  column2,
+                                                  indexOfTheWordToGuess,
+                                                  true,
+                                                  1, () {
+                                                isCorrect = true;
+                                                playLocalAsset();
+                                                showMessage(isCorrect);
+                                              }),
+                                              buildCard(
+                                                  isEnglishFlagVisible,
+                                                  isCorrectNUM = 0,
+                                                  level,
+                                                  row2,
+                                                  column2,
+                                                  randomIndexSecondColumn,
+                                                  false,
+                                                  1, () {
+                                                isCorrect = false;
+                                                playLocalAssetWrong();
+                                                showMessage(isCorrect);
+                                              }),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              buildCard(
+                                                  isEnglishFlagVisible,
+                                                  isCorrectNUM = 0,
+                                                  level,
+                                                  row2,
+                                                  column2,
+                                                  randomIndexThirdColumn,
+                                                  false,
+                                                  1, () {
+                                                isCorrect = false;
+                                                showMessage(isCorrect);
+                                              }),
+                                              buildCard(
+                                                  isEnglishFlagVisible,
+                                                  isCorrectNUM = 0,
+                                                  level,
+                                                  row2,
+                                                  column2,
+                                                  randomIndexFourthColumn,
+                                                  false,
+                                                  1, () {
+                                                isCorrect = false;
+                                                playLocalAssetWrong();
+                                                showMessage(isCorrect);
+                                              }),
+                                            ],
+                                          ),
+                                        ),
                                       ],
                                     ),
-                                  ),
-                                  Expanded(
-                                    child: Column(
+                                  ],
+                                );
+
+                              case 2:
+                                ////print("case 2");
+                                return Column(
+                                  children: [
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 2,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndex,
+                                        !random.nextBool(),
+                                        0, () {
+                                      isCorrect = !random.nextBool();
+                                    }),
+                                    const SizedBox(height: 40),
+                                    Row(
                                       children: [
-                                        buildCard(
-                                            isEnglishFlagVisible,
-                                            isCorrectNUM = 0,
-                                            level,
-                                            row2,
-                                            column2,
-                                            randomIndexFourthColumn,
-                                            false,
-                                            1, () {
-                                          isCorrect = false;
-                                          playLocalAssetWrong();
-                                          showMessage(isCorrect);
-                                        }),
-                                        buildCard(
-                                            isEnglishFlagVisible,
-                                            isCorrectNUM = 1,
-                                            level,
-                                            row2,
-                                            column2,
-                                            indexOfTheWordToGuess,
-                                            true,
-                                            1, () {
-                                          isCorrect = true;
-                                          playLocalAsset();
-                                          showMessage(isCorrect);
-                                        }),
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              buildCard(
+                                                  isEnglishFlagVisible,
+                                                  isCorrectNUM = 0,
+                                                  level,
+                                                  row2,
+                                                  column2,
+                                                  randomIndexSecondColumn,
+                                                  false,
+                                                  1, () {
+                                                isCorrect = false;
+                                                playLocalAssetWrong();
+                                                showMessage(isCorrect);
+                                              }),
+                                              buildCard(
+                                                  isEnglishFlagVisible,
+                                                  isCorrectNUM = 1,
+                                                  level,
+                                                  row2,
+                                                  column2,
+                                                  indexOfTheWordToGuess,
+                                                  true,
+                                                  1, () {
+                                                isCorrect = true;
+                                                playLocalAsset();
+                                                showMessage(isCorrect);
+                                              }),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              buildCard(
+                                                  isEnglishFlagVisible,
+                                                  isCorrectNUM = 0,
+                                                  level,
+                                                  row2,
+                                                  column2,
+                                                  randomIndexThirdColumn,
+                                                  false,
+                                                  1, () {
+                                                isCorrect = false;
+                                                playLocalAssetWrong();
+                                                showMessage(isCorrect);
+                                              }),
+                                              buildCard(
+                                                  isEnglishFlagVisible,
+                                                  isCorrectNUM = 0,
+                                                  level,
+                                                  row2,
+                                                  column2,
+                                                  randomIndexFourthColumn,
+                                                  false,
+                                                  1, () {
+                                                isCorrect = false;
+                                                playLocalAssetWrong();
+                                                showMessage(isCorrect);
+                                              }),
+                                            ],
+                                          ),
+                                        ),
                                       ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          );
-                        default:
-                          return const SizedBox.shrink();
-                      }
-                    },
-                  ),
+                                  ],
+                                );
+
+                              case 3:
+                                ////print("case 3");
+                                return Column(
+                                  children: [
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 2,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndex,
+                                        !random.nextBool(),
+                                        0, () {
+                                      isCorrect = !random.nextBool();
+                                    }),
+                                    const SizedBox(height: 40),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              buildCard(
+                                                  isEnglishFlagVisible,
+                                                  isCorrectNUM = 0,
+                                                  level,
+                                                  row2,
+                                                  column2,
+                                                  randomIndexSecondColumn,
+                                                  false,
+                                                  1, () {
+                                                isCorrect = false;
+                                                playLocalAssetWrong();
+                                                showMessage(isCorrect);
+                                              }),
+                                              buildCard(
+                                                  isEnglishFlagVisible,
+                                                  isCorrectNUM = 0,
+                                                  level,
+                                                  row2,
+                                                  column2,
+                                                  randomIndexThirdColumn,
+                                                  false,
+                                                  1, () {
+                                                isCorrect = false;
+                                                playLocalAssetWrong();
+                                                showMessage(isCorrect);
+                                              }),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              buildCard(
+                                                  isEnglishFlagVisible,
+                                                  isCorrectNUM = 1,
+                                                  level,
+                                                  row2,
+                                                  column2,
+                                                  indexOfTheWordToGuess,
+                                                  true,
+                                                  1, () {
+                                                isCorrect = true;
+                                                playLocalAsset();
+                                                showMessage(isCorrect);
+                                              }),
+                                              buildCard(
+                                                  isEnglishFlagVisible,
+                                                  isCorrectNUM = 0,
+                                                  level,
+                                                  row2,
+                                                  column2,
+                                                  randomIndexFourthColumn,
+                                                  false,
+                                                  1, () {
+                                                isCorrect = false;
+                                                playLocalAssetWrong();
+                                                showMessage(isCorrect);
+                                              }),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+
+                              case 4:
+                                ////print("case 4");
+                                return Column(
+                                  children: [
+                                    buildCard(
+                                        isEnglishFlagVisible,
+                                        isCorrectNUM = 2,
+                                        level,
+                                        row2,
+                                        column2,
+                                        randomIndex,
+                                        !random.nextBool(),
+                                        0, () {
+                                      isCorrect = !random.nextBool();
+                                    }),
+                                    const SizedBox(height: 40),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              buildCard(
+                                                  isEnglishFlagVisible,
+                                                  isCorrectNUM = 0,
+                                                  level,
+                                                  row2,
+                                                  column2,
+                                                  randomIndexSecondColumn,
+                                                  false,
+                                                  1, () {
+                                                isCorrect = false;
+                                                playLocalAssetWrong();
+                                                showMessage(isCorrect);
+                                              }),
+                                              buildCard(
+                                                  isEnglishFlagVisible,
+                                                  isCorrectNUM = 0,
+                                                  level,
+                                                  row2,
+                                                  column2,
+                                                  randomIndexThirdColumn,
+                                                  false,
+                                                  1, () {
+                                                isCorrect = false;
+                                                playLocalAssetWrong();
+                                                showMessage(isCorrect);
+                                              }),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              buildCard(
+                                                  isEnglishFlagVisible,
+                                                  isCorrectNUM = 0,
+                                                  level,
+                                                  row2,
+                                                  column2,
+                                                  randomIndexFourthColumn,
+                                                  false,
+                                                  1, () {
+                                                isCorrect = false;
+                                                playLocalAssetWrong();
+                                                showMessage(isCorrect);
+                                              }),
+                                              buildCard(
+                                                  isEnglishFlagVisible,
+                                                  isCorrectNUM = 1,
+                                                  level,
+                                                  row2,
+                                                  column2,
+                                                  indexOfTheWordToGuess,
+                                                  true,
+                                                  1, () {
+                                                isCorrect = true;
+                                                playLocalAsset();
+                                                showMessage(isCorrect);
+                                              }),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              default:
+                                return const SizedBox.shrink();
+                            }
+                          },
+                        ),
                 ),
                 /*GestureDetector(
                   onTap: () {
