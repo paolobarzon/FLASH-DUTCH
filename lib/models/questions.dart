@@ -1,23 +1,23 @@
-import 'package:audioplayers/audioplayers.dart';
+//import 'package:audioplayers/audioplayers.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:csv/csv.dart';
 import 'dart:math';
-import '../card_builder.dart';
-import '../utils.dart';
+
+//import '../card_builder.dart';
+import 'package:simple_app_simple/utils.dart';
 
 //import 'package:country_icons/country_icons.dart';
 ///import 'package:simple_app_simple/main.dart';
 import 'package:simple_app_simple/models/sucker_page.dart';
-import 'dart:async';
+//import 'dart:async';
 
 //import 'dart:convert';
 //import 'dart:io';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../constants.dart';
-import '../screens/Choosing Thema/choosing_thema.dart';
+import 'package:simple_app_simple/constants.dart';
+import 'package:simple_app_simple/screens/Choosing Thema/choosing_thema.dart';
 
 //bool isEnglishFlagVisible = true;
 //SharedPreferences prefs = SharedPreferences.getInstance();
@@ -85,13 +85,15 @@ class _MyHomePageState extends State<MyHomePage> {
   bool hasAnsweredCorrectly = false;
   int isCorrectNUM = 2;
   bool isVisible = false;
-  late OverlayEntry overlayEntry; // Define it at class level
+  late OverlayEntry? overlayEntry; // Define it at class level
   static const double baseScreenWidth = 411.42857142857144;
   String wordToGuess = "";
   int indexEnd = 0;
   int indexStart = 0;
   List<String> wordList = [];
-  OverlayEntry? currentOverlayEntry; // Variable to store the current overlay entry
+  OverlayEntry?
+      currentOverlayEntry; // Variable to store the current overlay entry
+  Color backgroundColor = Color.fromRGBO(28, 27, 31, 1.0);
 
   //final player = AudioPlayer();
 
@@ -184,7 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // Return the index if a match is found
         ////print(_data[i]);
         ////print("data i above, i below");
-        print(i);
+        //print(i);
         index1 = i;
         //return i;
       }
@@ -310,7 +312,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ////print("index");
     ////print(index);
     String mainString = _data[index][column].toString();
-    print("ehre should be the same as above: $mainString");
+    //print("ehre should be the same as above: $mainString");
     ////print('we enter getcorrectstring with $index as index and $indexOfDutchWord');
 
     ////print ma
@@ -463,16 +465,26 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       // Split the displayedText into words
       List<String> words = displayedText.split(' ');
+      //print(words);
 
       // Check if any word in the list has a length greater than 13
-      bool isWordLong = words.any((word) => word.length > 11);
+      bool isWordLong = words.any((word) => word.length > 10);
 
+      var screenWidth = MediaQuery.of(context).size.width;
+      double ratio = min(1, words.last.length / (screenWidth / 10));
+      double adjustedFontSize = fontSize2 * (1 - ratio);
+      if (isWordLong) {
+        adjustedFontSize *=
+            0.60; // You can adjust the reduction factor as needed
+      }
+      //print(isWordLong);
+      adjustedFontSize = max(adjustedFontSize, 10.0);
       // Adjust the font size based on the result
-      fontSize2 = isWordLong ? 18.0 : 24.0;
+      /*fontSize2 = isWordLong ? 18.0 : 24.0;
 
       if (displayedText.length > 19) {
         fontSize2 = 14.0;
-      }
+      }*/
     }
     ////print("it changed to $displayedText");
     displayedText = capitalize(displayedText);
@@ -517,8 +529,20 @@ class _MyHomePageState extends State<MyHomePage> {
     ////print( "hey");
     ////print('$level, $thema, $section $column, index is $index');
     int randomNumber = 0;
+    //print("colun is $column and isflagvisible is $isEnglishFlagVisible");
+    //print(column);
     double screenWidth = MediaQuery.of(context).size.width;
-    double cardWidth = (column == 1 || level == "B1/B2")
+    /*print((column == 0 && isEnglishFlagVisible) ||
+        (column == 1 && !isEnglishFlagVisible) ||
+        level == "B1/B2");
+    print(column == 0 && isEnglishFlagVisible);
+    print
+        (column == 1 && !isEnglishFlagVisible);
+    print(level == "B1/B2");
+    print("------------------");*/
+    double cardWidth = ((column == 0 && !isEnglishFlagVisible) ||
+            (column == 1 && isEnglishFlagVisible) ||
+            level == "B1/B2")
         ? screenWidth - 20
         : screenWidth / 2 - 20;
     if (!isEnglishFlagVisible) {
@@ -537,7 +561,7 @@ class _MyHomePageState extends State<MyHomePage> {
 // Assuming this part is executed when you initially set up the quizlet:
     if (isThisTheFirstWordEverOfTheQuizlet) {
       List<int> indices = searchInCSV(level, thema, section);
-      print("the chosen indeces are: $indices");
+      //print("the chosen indeces are: $indices");
       indexStart = indices[0] + 1;
       indexEnd = indices[1] - 1;
       numberOfcircles = indexEnd - indexStart + 1;
@@ -577,17 +601,17 @@ class _MyHomePageState extends State<MyHomePage> {
         //index++;
         else {
           Random random = Random();
-          print("the indeces are $indexStart $indexEnd");
+          //print("the indeces are $indexStart $indexEnd");
           // Generate a random number within the range [index, indexEnd - 1]
           randomNumber = indexStart + random.nextInt(indexEnd - indexStart);
-          print("the index of the wrong word is $randomNumber");
+          //print("the index of the wrong word is $randomNumber");
           mainString = _data[randomNumber][column].toString();
         }
       }
     }
     ////print(index);
 
-    print(mainString);
+    //print(mainString);
     //mainString = _data[index][column].toString();
     ////print("first try at getting the word: $mainString");
     ////print("we are identifying the type... $index and $indexOfDutchWord should be the same");
@@ -671,7 +695,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     mainString = modifyDisplayedTextForThe(mainString);
     mainString = capitalize(mainString);
-    print(mainString);
+    //print(mainString);
     /*double fontSize2 = 24.0;
     if ((isEnglishFlagVisible && column==0) ||
         (!isEnglishFlagVisible && column==1)){
@@ -695,14 +719,14 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         child: Card(
           elevation: 0, // Set elevation to 0 to make the card flat
-          shape: RoundedRectangleBorder(
+          /*shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
             side: const BorderSide(
               width: 2, // Set border width
               color: Colors
                   .transparent, // Initially set border color to transparent
             ),
-          ),
+          ),*/
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
@@ -712,8 +736,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   : null,
               color: (column != 0 || !isEnglishFlagVisible) &&
                       (column != 1 || isEnglishFlagVisible)
-                  ? Colors
-                      .black // Set the background to white if the condition is not met
+                  ? backgroundColor // Set the background to white if the condition is not met
                   : null, // Otherwise, keep the background color null
             ),
             padding: const EdgeInsets.all(16),
@@ -753,7 +776,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           context, 28) // Adjusts the font size dynamically
                       : level == "B1/B2"
                           ? getAdjustedFontSize(context, 20)
-                          : getAdjustedFontSize(context, 24),
+                          : getAdjustedFontSize(context, fontSize2),
                   fontWeight: (column == 0 && isEnglishFlagVisible) ||
                           (column == 1 && !isEnglishFlagVisible)
                       ? FontWeight.bold
@@ -772,102 +795,124 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  OverlayEntry _createOverlayEntry(isCorrect) {
+  OverlayEntry? _createOverlayEntry(isCorrect) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final containerWidth = screenWidth * 0.5; // Or a fixed value
+    final leftOffset = (screenWidth - containerWidth) / 2;
     overlayEntry = OverlayEntry(
       // Use the class-level variable
       builder: (context) => Stack(
         children: [
           Positioned(
-            left: 0,
+            left: leftOffset,
             top: MediaQuery.of(context).size.height * 4 / 5 - 25, // 3/4 down
-            right: 0,
-            child: GestureDetector(
-              onTap: () {
-                print("Overlay button tapped!");
-                if (isCorrect) {
-                  overlayEntry.remove();
-                  setState(() {
-                    // Reset hasAnsweredCorrectly when moving to the next card
-                    hasAnsweredCorrectly = false;
-                    isThisTheFirstTry = true;
-                    displayedCardsCount++;
-                    if (didIgetItWrongFirst) {
-                      updateProgress(!isCorrect);
-                    } else {
-                      updateProgress(isCorrect);
+            //right: 0,
+            child: Align(
+              alignment: Alignment.center,
+              child: GestureDetector(
+                onTap: () {
+                  //print("Overlay button tapped!");
+                  if (isCorrect) {
+                    if (overlayEntry != null) {
+                      overlayEntry?.remove();
+                      overlayEntry = null;
                     }
-                    didIgetItWrongFirst = false;
-                    isCorrect = false;
-                    isArticle = false;
-                    isVerb = false;
-                    isOther = false;
-                    wordList = [];
-                    if (displayedCardsCount == numberOfcircles) {
-                      completelyCorrect = wrongAnswers == 0;
-                      storeData(widget.quizletId, true, completelyCorrect);
-                      // Call onQuizletCompleted() when quizlet is completed
-                      onQuizletCompleted(selectedQuizlet, widget.level,
-                              widget.row, widget.column)
-                          .then((prefs) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SuckerPage(
-                              rightAnswers: rightAnswers,
-                              wrongAnswers: wrongAnswers,
-                              whatWasIdoing: "questions",
-                              level: widget.level,
-                              row: widget.row,
-                              column: widget.column,
-                              isEnglishFlagVisible: widget.isEnglishFlagVisible,
-                              // Pass the SharedPreferences instance
-                              difficulty: '',
+                    setState(() {
+                      // Reset hasAnsweredCorrectly when moving to the next card
+                      hasAnsweredCorrectly = false;
+                      isThisTheFirstTry = true;
+                      displayedCardsCount++;
+                      /*if (didIgetItWrongFirst) {
+                        updateProgress(!isCorrect);
+                      } else {
+                        updateProgress(isCorrect);
+                      }*/
+                      didIgetItWrongFirst = false;
+                      isCorrect = false;
+                      isArticle = false;
+                      isVerb = false;
+                      isOther = false;
+                      wordList = [];
+                      if (displayedCardsCount == numberOfcircles) {
+                        completelyCorrect = wrongAnswers == 0;
+                        storeData(widget.quizletId, true, completelyCorrect);
+                        // Call onQuizletCompleted() when quizlet is completed
+                        onQuizletCompleted(selectedQuizlet, widget.level,
+                                widget.row, widget.column)
+                            .then((prefs) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SuckerPage(
+                                rightAnswers: rightAnswers,
+                                wrongAnswers: wrongAnswers,
+                                whatWasIdoing: "questions",
+                                level: widget.level,
+                                row: widget.row,
+                                column: widget.column,
+                                isEnglishFlagVisible:
+                                    widget.isEnglishFlagVisible,
+                                // Pass the SharedPreferences instance
+                                difficulty: '',
+                              ),
+                            ),
+                          );
+                        });
+                      }
+                    });
+                  } else {
+                    if (overlayEntry != null) {
+                      overlayEntry?.remove();
+                      overlayEntry = null;
+                    }
+                  }
+                  // Perform your action here
+                },
+                child: Container(
+                  width: containerWidth,
+                  //height: 450, // Button height*/
+                  decoration: BoxDecoration(
+                    color: isCorrect ? Colors.green : Colors.red,
+                    // Button color
+                    borderRadius: BorderRadius.circular(10), // Rounded corners
+                  ),
+                  child: IntrinsicWidth(
+                    // Use IntrinsicWidth to size the container to its child's width
+                    child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24.0, vertical: 16.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                // Center align the contents of the Row
+                                // Minimize the row's width to fit its children
+                                children: [
+                                  Icon(
+                                    isCorrect ? Icons.check : Icons.close,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 8.0),
+                                  Text(
+                                    isCorrect ? "Correct!" : "Wrong!",
+                                    style: const TextStyle(
+                                      fontSize: 28.0,
+                                      fontFamily: 'Roboto',
+                                      // Set the font family for this Text widget to Roboto
+                                      color: Colors.black,
+                                      decoration: TextDecoration
+                                          .none, // Ensure no underline is applied
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        );
-                      });
-                    }
-                  });
-                } else {
-                  overlayEntry.remove();
-                }
-                // Perform your action here
-              },
-              child: Container(
-                /*width: 250, // Button width
-                  height: 150, // Button height*/
-                decoration: BoxDecoration(
-                  color: isCorrect ? Colors.green : Colors.red,
-                  // Button color
-                  borderRadius: BorderRadius.circular(10), // Rounded corners
-                ),
-                child: IntrinsicWidth(
-                  // Use IntrinsicWidth to size the container to its child's width
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 10.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      // Minimize the row's width to fit its children
-                      children: [
-                        Icon(
-                          isCorrect ? Icons.check : Icons.close,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(width: 8.0),
-                        Text(
-                          isCorrect ? "Correct!" : "Wrong!",
-                          style: const TextStyle(
-                            fontSize: 28.0,
-                            fontFamily: 'Roboto',
-                            // Set the font family for this Text widget to Roboto
-                            color: Colors.black,
-                            decoration: TextDecoration
-                                .none, // Ensure no underline is applied
-                          ),
-                        ),
-                      ],
-                    ),
+                        ]),
                   ),
                 ),
               ),
@@ -879,19 +924,26 @@ class _MyHomePageState extends State<MyHomePage> {
     return overlayEntry;
   }
 
+  void closeOverlay() {
+    if (currentOverlayEntry == null || currentOverlayEntry?.mounted == false)
+      return;
+    currentOverlayEntry?.remove();
+    currentOverlayEntry = null;
+  }
+
   void showOverlay(BuildContext context, bool isCorrect) {
-    if (currentOverlayEntry != null) {
-      // If there's already an overlay entry, remove it before inserting a new one
-      currentOverlayEntry!.remove();
-    }
-    OverlayEntry localoverlayEntry = _createOverlayEntry(isCorrect);
-    Overlay.of(context).insert(localoverlayEntry);
+    closeOverlay();
+    OverlayEntry? localoverlayEntry = _createOverlayEntry(isCorrect);
+    Overlay.of(context).insert(localoverlayEntry!);
     currentOverlayEntry = localoverlayEntry; // Update the current overlay entry
 
     // Optionally, to automatically remove the overlay after some time:
-    Future.delayed(Duration(seconds: 5), () {
-      localoverlayEntry.remove();
-    });
+    /*Future.delayed(Duration(seconds: 5), () {
+      if (overlayEntry != null) {
+        overlayEntry?.remove();
+        overlayEntry = null;
+      }
+    });*/
   }
 
   void showMessage(bool isCorrect) {
@@ -1059,20 +1111,24 @@ class _MyHomePageState extends State<MyHomePage> {
           height: 100.0,
           child: AppBar(
             // Add an AppBar with a leading icon button
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                // Handle the navigation accordingly, for example, pop the current screen
-                Navigator.maybePop(
-                    context); // Use maybePop to handle back navigation
-              },
+            leading: Container(
+              margin: EdgeInsets.symmetric(vertical: 16.0),
+              // Adjust vertical margin as needed
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  // Handle the navigation accordingly, for example, pop the current screen
+                  Navigator.maybePop(
+                      context); // Use maybePop to handle back navigation
+                },
+              ),
             ),
             title: Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: EdgeInsets.only(
                   right: MediaQuery.of(context).size.width *
-                      0.05, // Use a percentage of the screen width
+                      0.09, // Use a percentage of the screen width
                   top: 16.0,
                 ),
                 child: const Row(

@@ -26,7 +26,7 @@ class _ButtonPageState extends State<ButtonPage> {
   String level = '';
   String quizletId = '';
   int globalRowCounter = 1;
-  bool isFlagSwapped = true;
+  bool isFlagSwapped = false;
   List<bool> levelVisibility = [false, false, false, false, false, false];
   Map<String, Color> quizletCompletionStatus =
       {}; // Map to store completion status
@@ -329,7 +329,8 @@ class _ButtonPageState extends State<ButtonPage> {
                                         10; // Rows from 1 to 20 for the first 80 items
                                   }
                                   if (i == 5) {
-                                    row = index + 1; // Rows from 1 to 20 for the first 80 items
+                                    row = index ~/ 4 +
+                                        1;
                                   }
                                   /*if (index < 80) {
                                     row = index ~/ 4 +
@@ -411,7 +412,7 @@ class _ButtonPageState extends State<ButtonPage> {
                                               borderRadius: BorderRadius.circular(12),
                                             ),
                                             child: Text(
-                                              i == 5 ? '$level:\n$row' : '$level:\n$row - $column',
+                                              '$level:\n$row - $column',
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold, // Make the text bold
