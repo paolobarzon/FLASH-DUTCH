@@ -13,18 +13,18 @@ int generateRandomNumber(int min, int max) {
 }
 
 void playLocalAsset() {
-  final player = AudioPlayer();
-  player.play(AssetSource('correct.mp3'));
+  /*final player = AudioPlayer();
+  player.play(AssetSource('correct.mp3'));*/
 }
 
 void playLocalAssetWrong() {
-  final player = AudioPlayer();
-  player.play(AssetSource('wrong.mp3'));
+/*  final player = AudioPlayer();
+  player.play(AssetSource('wrong.mp3'));*/
 }
 
 void playLocalAssetEndLevel() {
-  final player = AudioPlayer();
-  player.play(AssetSource('end level.wav'));
+/*  final player = AudioPlayer();
+  player.play(AssetSource('end level.wav'));*/
 }
 
 void storeData(String key, bool value1, bool value2) {

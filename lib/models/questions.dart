@@ -3,6 +3,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:csv/csv.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'dart:math';
 
 //import '../card_builder.dart';
@@ -11,10 +13,10 @@ import 'package:simple_app_simple/utils.dart';
 //import 'package:country_icons/country_icons.dart';
 ///import 'package:simple_app_simple/main.dart';
 import 'package:simple_app_simple/models/sucker_page.dart';
-//import 'dart:async';
+import 'dart:async';
 
-//import 'dart:convert';
-//import 'dart:io';
+import 'dart:convert';
+import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_app_simple/constants.dart';
 import 'package:simple_app_simple/screens/Choosing Thema/choosing_thema.dart';
@@ -224,6 +226,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // Function to handle quizlet completion
   Future<SharedPreferences> onQuizletCompleted(
       String quizletId, String level, int row, int column) async {
+    //print("done pt 20");
     // Store information about completed quizlet (e.g., in shared preferences)
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // Set a flag indicating the completion status of the quizlet
@@ -834,29 +837,24 @@ class _MyHomePageState extends State<MyHomePage> {
                       isOther = false;
                       wordList = [];
                       if (displayedCardsCount == numberOfcircles) {
+                        //print("done!");
+                        print("correct: $rightAnswers");
                         completelyCorrect = wrongAnswers == 0;
                         storeData(widget.quizletId, true, completelyCorrect);
                         // Call onQuizletCompleted() when quizlet is completed
                         onQuizletCompleted(selectedQuizlet, widget.level,
                                 widget.row, widget.column)
                             .then((prefs) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SuckerPage(
-                                rightAnswers: rightAnswers,
-                                wrongAnswers: wrongAnswers,
-                                whatWasIdoing: "questions",
-                                level: widget.level,
-                                row: widget.row,
-                                column: widget.column,
-                                isEnglishFlagVisible:
-                                    widget.isEnglishFlagVisible,
-                                // Pass the SharedPreferences instance
-                                difficulty: '',
-                              ),
-                            ),
-                          );
+                          Get.to(() => SuckerPage(
+                            rightAnswers: rightAnswers,
+                            wrongAnswers: wrongAnswers,
+                            whatWasIdoing: "questions",
+                            level: widget.level,
+                            row: widget.row,
+                            column: widget.column,
+                            isEnglishFlagVisible: widget.isEnglishFlagVisible,
+                            difficulty: '',
+                          ));
                         });
                       }
                     });
@@ -933,6 +931,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void showOverlay(BuildContext context, bool isCorrect) {
     closeOverlay();
+    if (isThisTheFirstTry) {
+      if (!isCorrect) {
+        wrongAnswers++;
+        didIgetItWrongFirst = true;
+        isThisTheFirstTry = false;
+      } else {
+        // Only increment rightAnswers if hasAnsweredCorrectly is false
+        if (!hasAnsweredCorrectly) {
+          rightAnswers++;
+          hasAnsweredCorrectly =
+          true; // Prevents incrementing rightAnswers again for the same card
+        }
+      }
+    }
     OverlayEntry? localoverlayEntry = _createOverlayEntry(isCorrect);
     Overlay.of(context).insert(localoverlayEntry!);
     currentOverlayEntry = localoverlayEntry; // Update the current overlay entry
